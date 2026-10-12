@@ -710,6 +710,38 @@ html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
   .aura i{filter:blur(60px)}
 }
 @media (hover:none){.card:hover,.chan:hover,.art:hover,.btn:hover,.btn-dark:hover{transform:none}}
+
+/* ===== Mobile Performance + Popup-Fix ===== */
+@media (max-width:820px), (hover:none){
+  /* schwere Echtzeit-Effekte aus: statischer Verlauf statt geblurrter Riesenflächen */
+  .aura i,.aura::after,.glow-stage{display:none!important}
+  .aura{background:radial-gradient(120% 60% at 0% 0%,rgba(115,86,255,.10),transparent 60%),radial-gradient(90% 50% at 100% 100%,rgba(115,86,255,.06),transparent 60%),#010102!important}
+  *,*::before,*::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .card,.node,.finder,.mini,.qans,.chan,.art,.pt,.vframe,.sheet{background-color:#111115!important}
+  .top.scrolled{background:rgba(4,4,8,.94)!important}
+  .dia,.streak,#streak,.mtrack,#ring{will-change:auto!important}
+  .dia{transform:none!important}
+  .rv.pre{filter:none!important}
+  .spot::after{display:none}
+  html{scroll-behavior:auto}
+}
+@media (max-width:620px){
+  .qk{padding:0!important;align-items:flex-end!important}
+  .qk .sheet{max-width:none!important;width:100%;max-height:92dvh!important;max-height:92vh;border-radius:22px 22px 0 0!important;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom)}
+  .qk .x{position:sticky!important;top:10px;float:right;margin:10px 10px -46px 0;z-index:5;width:40px;height:40px;background:rgba(30,30,36,.95)!important;font-size:22px}
+  .qk-hero{padding:18px 20px 0!important}
+  .qk-av{width:52px!important;height:52px!important}
+  .qk-badge{margin-top:10px!important}
+  .qk-hero h2{font-size:21px!important;margin-top:10px!important}
+  .qk-hero p{font-size:13px!important;margin-top:6px!important}
+  .qk form{padding:14px 20px 18px!important;gap:9px!important}
+  .qk .f input{padding:11px 13px;font-size:16px}
+  .qk .consent{font-size:12px}
+  .modal:not(.qk) .sheet{max-height:92dvh!important}
+}
+
+.qk .x{z-index:20!important}
+.qk-hero{z-index:1}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1361,6 +1393,7 @@ html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
   var secs=['top','vorteile','programm','mentor','angebot','faq'].map(function(id){return document.getElementById(id);});
   var streak=document.getElementById('streak'),gb1=document.getElementById('gb1'),gb2=document.getElementById('gb2'),vframe=document.getElementById('vframe'),diaL=document.getElementById('diaL'),diaR=document.getElementById('diaR'),ring=document.getElementById('ring'),ticking=false;
   function clamp(v){return v<0?0:v>1?1:v;}
+  var lite=window.matchMedia('(max-width:820px), (hover:none)').matches;
   var cur=window.scrollY,raf=0,lastNav=-1;
   function apply(y){
     var vh=window.innerHeight;
@@ -1380,7 +1413,7 @@ html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
     var sc=y>16;if(sc!==lastNav){nav.classList.toggle('scrolled',sc);lastNav=sc;}
     var mark=y+vh*0.35,idx=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top+y<=mark)idx=i;});
     links.forEach(function(a,i){a.classList.toggle('on',i===idx);});
-    if(reduce)return;
+    if(reduce||lite)return;
     cur+=(y-cur)*0.12;
     if(Math.abs(y-cur)<0.4)cur=y;
     apply(cur);
@@ -1428,7 +1461,7 @@ html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
   function open(){
     if(document.getElementById('modal').classList.contains('open'))return;
     last=document.activeElement;qk.classList.add('open');qk.setAttribute('aria-hidden','false');document.body.classList.add('lock');mark();
-    setTimeout(function(){document.getElementById('q-name').focus({preventScroll:true});},350);
+    if(!window.matchMedia('(hover:none)').matches)setTimeout(function(){document.getElementById('q-name').focus({preventScroll:true});},350);
   }
   function close(){qk.classList.remove('open');qk.setAttribute('aria-hidden','true');document.body.classList.remove('lock');if(last&&last.focus)last.focus({preventScroll:true});}
   qk.querySelectorAll('[data-qclose]').forEach(function(el){el.addEventListener('click',close);});
