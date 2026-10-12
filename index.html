@@ -3,1101 +3,434 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Learn 2 Rent</title>
+<title>Learn 2 Rent – Deine eigene Autovermietung mit System</title>
 <meta name="description" content="Learn 2 Rent – baue deine eigene Autovermietung mit System auf. Programm von Adin Kilim, Edition Rent.">
-<meta name="theme-color" content="#020204">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="theme-color" content="#050507">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap">
 <link rel="preload" as="image" href="vsl-poster-weiss.jpg">
-</head>
-<body>
-<title>Learn 2 Rent</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter+Tight:wght@600;700&family=Instrument+Serif:ital@1&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: near-black stage, one hot orange light source (an eclipse horizon under the hero), bento cards with soft orange underglow; everything else quiet and dark. */
+/* ---------- Basis ---------- */
 :root{
-  --bg:#09090A; --card:#111114; --card-2:#16161A; --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.13);
-  --fg:#FFFFFF; --muted:rgba(255,255,255,.72); --dim:rgba(255,255,255,.5); --faint:rgba(255,255,255,.32);
-  --o1:#A08CFF; --o2:#7356FF; --o3:#3F25B8; --glow:rgba(115,86,255,.5);
-  --sans:'Manrope',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
-  --mono:'Geist Mono',ui-monospace,Menlo,monospace;
-  color-scheme:dark;
+  --bg:#050507; --card:#0e0e12; --card2:#131318;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --fg:#fff; --muted:rgba(255,255,255,.72); --dim:rgba(255,255,255,.52);
+  --p1:#A08CFF; --p2:#7356FF; --p3:#5A3BE6;
+  --grad:linear-gradient(90deg,#C4B5FF,#A99CFF 50%,#9EC5FF);
+  --head:"Inter Tight",system-ui,sans-serif; --body:"Manrope",system-ui,sans-serif;
+  --r:20px; --ease:cubic-bezier(.22,1,.36,1);
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:absolute;inset:0 0 auto;height:900px;z-index:-1;pointer-events:none;
+  background:radial-gradient(60% 55% at 50% 0%,rgba(115,86,255,.22),transparent 70%)}
+img,video{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,p{margin:0}
-h1,h2,h3{text-wrap:balance;font-weight:500;letter-spacing:-0.02em}
-:focus-visible{outline:2px solid var(--o1);outline-offset:3px;border-radius:8px}
-.wrap{max-width:1160px;margin:0 auto;padding-inline:20px;position:relative}
-.sec{position:relative;padding-top:clamp(100px,11vw,150px)}
-.o{color:var(--o1)}
-.grain{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.045;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+h1,h2{font-family:var(--head);font-weight:700;letter-spacing:-.035em;line-height:1.05;text-wrap:balance}
+h3{font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.3}
+button{font:inherit;color:inherit}
+a,button,input,select,label,summary{touch-action:manipulation}
+:focus-visible{outline:2px solid var(--p1);outline-offset:3px;border-radius:8px}
+.wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 20px}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lock{overflow:hidden}
 
-/* Logo */
-.mark{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.02em}
-.mark .ic{width:32px;height:32px;flex:none}
-.mark .wm{text-transform:uppercase}
-.mark .wm b{color:var(--o1);font-weight:800}
-.mark .dot{width:7px;height:7px;border-radius:50%;background:var(--o2);box-shadow:0 0 10px var(--o2);margin-left:-6px;margin-top:-12px}
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;cursor:pointer;
+  background:var(--p2);color:#fff;font-weight:600;font-size:15px;padding:13px 22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2);transition:background-color .25s}
+.btn:hover{background:#8269FF}
+.btn.light{background:#fff;color:#0A0614}
+.btn.light:hover{background:#EEEAFF}
+.btn.ghost{background:transparent;border:1px solid var(--line2)}
+.btn.ghost:hover{background:rgba(255,255,255,.06)}
+.btn.sm{padding:9px 16px;font-size:13.5px}
+.btn.block{width:100%}
 
-/* Nav */
-.top{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:50;transition:background-color .6s,border-color .6s;border-bottom:1px solid transparent}
-.top.scrolled{background:rgba(0,0,0,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom-color:var(--line)}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:70px}
-.menu{display:flex;gap:28px;font-size:13.5px;color:var(--dim)}
-.menu a{position:relative;transition:color .4s}
-.menu a:hover,.menu a.on{color:#fff}
-.menu a.on::after{content:"";position:absolute;left:50%;bottom:-8px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--o1);box-shadow:0 0 8px var(--o1)}
+/* ---------- Header ---------- */
+.top{position:sticky;top:0;z-index:50;background:rgba(5,5,7,.88);border-bottom:1px solid transparent;transition:border-color .3s}
+.top.scrolled{border-bottom-color:var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{height:40px;width:auto}
+.menu{display:none;gap:28px;font-size:14px;color:var(--dim)}
+.menu a:hover{color:#fff}
 
-/* Buttons */
-.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,var(--o1),var(--o2) 60%,#5A3BE6);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 0 1px rgba(200,190,255,.45) inset,0 8px 26px -8px var(--glow);transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(207,211,218,.7) inset,0 14px 34px -8px rgba(104,111,125,.85)}
-.btn::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .9s cubic-bezier(.16,1,.3,1)}
-.btn:hover::after{left:130%}
-.btn .ar,.ghost .ar{transition:transform .5s cubic-bezier(.16,1,.3,1)}
-.btn:hover .ar,.ghost:hover .ar{transform:translateX(3px)}
-.btn.sm{padding:9px 15px;font-size:13px;border-radius:9px}
-.ghost{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);color:#fff;border:1px solid var(--line-2);border-radius:10px;padding:11px 18px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:border-color .4s,background-color .4s}
-.ghost:hover{border-color:rgba(146,151,163,.55);background:rgba(104,111,125,.08)}
-.row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+/* ---------- Hero ---------- */
+.hero{position:relative;text-align:center;padding:48px 0 56px;overflow:hidden}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border:1px solid var(--line2);border-radius:999px;font-size:13px;color:var(--muted)}
+.pill img{width:26px;height:26px;border-radius:50%;object-fit:cover;object-position:50% 25%}
+.hero h1{margin-top:22px;font-size:clamp(36px,7.4vw,72px)}
+.hero h1 span{display:block}
+.strike{position:relative;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.strike::after{content:"";position:absolute;left:-2%;right:-2%;top:55%;height:.07em;min-height:3px;border-radius:2px;background:linear-gradient(90deg,var(--p2),var(--p1))}
+.lead{max-width:600px;margin:18px auto 0;color:var(--muted);font-size:16px}
+.hero .btn.light{margin-top:28px;padding:15px 28px;font-size:16px}
+.vsl{position:relative;display:block;max-width:900px;margin:40px auto 0;border-radius:18px;padding:6px;background:var(--card);border:1px solid var(--line2)}
+.vsl img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:13px}
+.vsl .play{position:absolute;left:50%;top:62%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;display:grid;place-items:center;background:var(--p2);box-shadow:0 0 0 10px rgba(115,86,255,.18)}
+.vsl .tag{position:absolute;right:18px;bottom:16px;font-size:11px;letter-spacing:.12em;padding:5px 10px;border-radius:999px;background:rgba(5,5,7,.75);color:var(--p1)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:24px 12px;margin-top:40px}
+.stats b{display:block;font-family:var(--head);font-size:32px;line-height:1;letter-spacing:-.02em}
+.stats span{display:block;margin-top:6px;font-size:13px;color:var(--dim)}
+.hero .dia{display:none}
 
-/* Pill */
-.pill{display:inline-flex;align-items:center;gap:10px;padding:5px 12px 5px 5px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);font-size:12.5px;color:var(--muted)}
-.pill .t{padding:3px 10px;border-radius:999px;background:linear-gradient(180deg,var(--o1),var(--o2));color:#fff;font-weight:700;font-size:11.5px;box-shadow:0 0 14px var(--glow)}
-.kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--o1)}
+/* ---------- Abschnitte ---------- */
+.sec{padding:72px 0 0}
+.head{text-align:center;max-width:780px;margin:0 auto 36px}
+.kick{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--p1)}
+.head h2{margin-top:12px;font-size:clamp(30px,5vw,52px)}
+.head p{margin:14px auto 0;max-width:600px;color:var(--dim)}
+.card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.card p{color:var(--dim);font-size:15px}
+.grid{display:grid;gap:14px}
+.ck,.xl{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.ck li,.xl li{position:relative;padding-left:28px;font-size:15px;color:var(--muted)}
+.ck li::before,.xl li::before{position:absolute;left:0;top:3px;width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:12px;line-height:1}
+.ck li::before{content:"✓";background:var(--p2);color:#fff}
+.xl li::before{content:"×";background:rgba(255,255,255,.07);color:var(--dim)}
+.xl li{color:var(--dim)}
 
-/* Hero + eclipse */
-.hero{position:relative;padding-top:clamp(130px,14vw,170px);text-align:center;overflow:hidden}
-.hero h1{margin:24px auto 0;font-size:clamp(36px,5vw,64px);line-height:1.08;font-weight:500;max-width:860px}
-.hero .lead{margin:20px auto 0;max-width:540px;color:var(--dim);font-size:15.5px}
-.hero .row{margin-top:30px}
-.stage{position:relative;height:clamp(560px,62vw,820px);margin-top:20px}
-.eclipse{position:absolute;left:50%;top:70px;width:min(1500px,170vw);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 50% 50%,#050506 0%,#060607 58%,#0B0B0D 70%);will-change:transform}
-.eclipse::before{content:"";position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(from 270deg,transparent 0deg,rgba(146,151,163,.0) 20deg,rgba(146,151,163,.9) 70deg,#E1E3E7 90deg,rgba(93,99,111,.95) 110deg,rgba(93,99,111,0) 160deg,transparent 360deg);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));filter:blur(.5px)}
-.eclipse::after{content:"";position:absolute;inset:-60px;border-radius:50%;background:conic-gradient(from 270deg,transparent 30deg,rgba(104,111,125,.55) 70deg,rgba(193,198,207,.75) 90deg,rgba(104,111,125,.55) 110deg,transparent 150deg);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 140px),#000 calc(100% - 60px),transparent 100%);mask:radial-gradient(farthest-side,transparent calc(100% - 140px),#000 calc(100% - 60px),transparent 100%);filter:blur(28px);opacity:var(--gl,.85)}
-.halo{position:absolute;left:50%;top:-40px;width:900px;height:420px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(104,111,125,.32),rgba(104,111,125,0) 70%);filter:blur(30px);pointer-events:none;opacity:var(--gl,.85)}
-.vslwrap{position:absolute;left:0;right:0;top:150px;perspective:1400px;padding-inline:20px}
-.vsl{position:relative;display:block;max-width:820px;margin:0 auto;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#141417,#0C0C0E);border:1px solid var(--line-2);box-shadow:0 -1px 0 rgba(196,200,209,.35) inset,0 50px 120px -30px rgba(0,0,0,.95),0 0 80px -30px rgba(104,111,125,.45);transform-origin:50% 100%;will-change:transform}
-.vsl .bar{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:12px;color:var(--dim);text-align:left}
-.vsl .bar i{width:8px;height:8px;border-radius:50%;background:#2A2A2E}
-.vsl .bar i:first-child{background:var(--o2);box-shadow:0 0 8px var(--o2)}
-.vsl .pb{position:absolute;left:50%;top:52%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,var(--o1),var(--o2));box-shadow:0 0 0 12px rgba(104,111,125,.14),0 0 60px rgba(104,111,125,.7);transition:transform .7s cubic-bezier(.16,1,.3,1),box-shadow .7s}
-.vsl:hover .pb{transform:scale(1.08);box-shadow:0 0 0 18px rgba(104,111,125,.1),0 0 80px rgba(104,111,125,.9)}
-.vsl .vt{position:absolute;left:18px;right:18px;bottom:16px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;font-size:14px;text-align:left}
-.vsl .vt span:last-child{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--o1);padding:5px 10px;border-radius:999px;border:1px solid rgba(146,151,163,.45)}
-.vsl .floor{position:absolute;left:10%;right:10%;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--o1),transparent);filter:blur(1px)}
+/* Medien */
+.press{display:grid;gap:14px}
+.reel{padding:8px}
+.reel video{width:100%;aspect-ratio:9/16;max-height:620px;object-fit:cover;border-radius:14px;background:#000}
+.reel .cap{padding:10px 6px 2px;font-size:14px;color:var(--dim)}
+.reel .cap b{color:#fff}
+.media{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:center}
+.media img{width:56px;height:56px;border-radius:50%;object-fit:cover}
+.media .k{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--p1)}
+.media h3{margin-top:2px}
+.media p{font-size:13px}
+.media .nums{margin-top:6px;font-size:13px;color:var(--muted)}
+.media .nums b{color:#fff}
+.media .btn{grid-column:1/-1;justify-self:start;margin-top:4px}
+.pub{font-family:Georgia,serif;font-size:20px;font-weight:700;padding-bottom:12px;margin:6px 0 12px;border-bottom:1px solid var(--line2)}
 
-/* Strip */
-.strip{text-align:center;margin-top:-10px}
-.strip small{display:block;font-size:13px;color:var(--dim)}
-.strip .r{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 60px;margin-top:22px}
-.strip .r div{display:flex;align-items:baseline;gap:8px}
-.strip b{font-size:26px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.85)}
-.strip span{font-size:13px;color:var(--dim)}
+/* Partner-Laufband */
+.marq{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.track{display:flex;gap:12px;width:max-content;animation:marq 80s linear infinite}
+@keyframes marq{to{transform:translateX(calc(-50% - 6px))}}
+.pt{flex:none;width:170px;padding:16px 12px;border-radius:16px;background:var(--card);border:1px solid var(--line);text-align:center}
+.pt img{width:120px;height:64px;object-fit:contain;margin:0 auto 10px}
+.media img,.pill img,.qhead img{height:auto}
+.pt b{display:block;font-size:13.5px}
+.pt span{font-size:12px;color:var(--dim)}
 
-/* Section head */
-.shead{text-align:center;max-width:720px;margin:0 auto}
-.shead h2{margin-top:14px;font-size:clamp(28px,3.4vw,44px);line-height:1.15}
-.shead p{margin:14px auto 0;max-width:560px;color:var(--dim);font-size:15px}
-
-/* Cards + bento */
-.card{position:relative;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 40%),var(--card);border:1px solid var(--line);overflow:hidden;transition:border-color .6s,transform .6s cubic-bezier(.16,1,.3,1)}
-.card:hover{border-color:rgba(146,151,163,.35);transform:translateY(-4px)}
-.spot::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(300px circle at var(--mx,50%) var(--my,50%),rgba(104,111,125,.10),transparent 60%);opacity:0;transition:opacity .5s}
-.spot:hover::after{opacity:1}
-.bento{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:52px}
-.bento .card{padding:22px;display:flex;flex-direction:column;gap:6px}
-.bento .tall{grid-row:span 2}
-.bento h3{font-size:17px;font-weight:700;text-align:center}
-.bento p{font-size:13.5px;color:var(--dim);text-align:center}
-.mock{margin-top:16px;display:flex;flex-direction:column;gap:8px}
-.mrow{display:flex;align-items:center;gap:10px;border-radius:10px;border:1px solid var(--line);background:#0C0C0E;padding:9px 12px;font-size:12px;color:var(--muted);transition:all .6s cubic-bezier(.16,1,.3,1)}
-.mrow.hl{background:linear-gradient(90deg,var(--o2),var(--o1));border-color:transparent;color:#fff;box-shadow:0 8px 24px -10px var(--glow)}
-.mrow .bar{flex:1;height:5px;border-radius:5px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}
-.mrow .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:linear-gradient(90deg,var(--o3),var(--o1))}
-.mrow.hl .bar{background:rgba(255,255,255,.3)}.mrow.hl .bar i{background:#fff}
-.tg{font-size:10.5px;padding:2px 8px;border-radius:999px;border:1px solid rgba(146,151,163,.45);color:var(--o1)}
-.mrow.hl .tg{border-color:rgba(255,255,255,.6);color:#fff}
-.cone{position:relative;flex:1;min-height:340px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:26px}
-.cone::before{content:"";position:absolute;left:50%;top:-24px;width:180%;height:78%;transform:translateX(-50%);background:linear-gradient(180deg,rgba(104,111,125,1),rgba(104,111,125,.45) 55%,rgba(104,111,125,0));clip-path:polygon(28% 0,72% 0,58% 100%,42% 100%);filter:blur(6px);transition:filter .6s}
-.cone::after{content:"";position:absolute;left:50%;top:-30px;width:60%;height:40px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(196,200,209,.9),transparent);filter:blur(8px)}
-.card:hover .cone::before{filter:blur(4px) brightness(1.15)}
-.cone .lg{position:relative;width:64px;height:64px;filter:drop-shadow(0 10px 30px rgba(0,0,0,.8))}
-.cone-t{text-align:center}
-.tools{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:18px}
-.tools span{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:var(--dim)}
-.tools i{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line-2);background:#0C0C0E;transition:all .5s cubic-bezier(.16,1,.3,1)}
-.tools span:hover i{border-color:rgba(146,151,163,.6);transform:translateY(-3px);box-shadow:0 8px 20px -8px var(--glow)}
+/* Vorteile */
+.feat .mock{display:grid;gap:8px;margin-top:16px}
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.row.on{background:var(--p2);border-color:transparent;color:#fff}
+.row .bar{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
+.row .bar i{display:block;height:100%;background:#fff;border-radius:4px}
+.row .t{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid currentColor;opacity:.85}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chips span{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);font-size:13px;color:var(--muted)}
+.praxis{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:220px;background:radial-gradient(80% 60% at 50% 0%,rgba(115,86,255,.25),transparent 70%),linear-gradient(180deg,var(--card2),var(--card))}
+.praxis .two{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line2);background:var(--bg);font-family:var(--head);font-style:italic;font-size:34px;font-weight:700;color:var(--p1)}
 
 /* Flow */
-.flow{position:relative;max-width:1000px;margin:56px auto 0;display:grid;grid-template-columns:240px minmax(0,1fr) 240px;align-items:center;column-gap:72px}
-.flow svg.wires{position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;overflow:visible;pointer-events:none}
-.node{position:relative;z-index:1;border-radius:14px;background:var(--card);border:1px solid var(--line-2);padding:14px 16px;text-align:left}
-.inputs,.outs{display:flex;flex-direction:column;gap:18px}
-.inputs .node{display:flex;gap:12px;align-items:center}
-.fic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:rgba(104,111,125,.12);border:1px solid rgba(146,151,163,.35);flex:none}
-.node b{display:block;font-size:13px;font-weight:700}
-.node small{font-size:11.5px;color:var(--dim)}
-.core{padding:0;overflow:hidden;border-color:rgba(146,151,163,.4);box-shadow:0 0 70px -20px rgba(104,111,125,.55)}
-.core .cb{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
-.core .cb i{width:7px;height:7px;border-radius:50%;background:#2A2A2E}
-.core .cb i:first-child{background:var(--o2)}
-.core .body{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
-.core .mod{border-radius:9px;border:1px solid var(--line);padding:8px 10px;font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:8px;transition:all .6s cubic-bezier(.16,1,.3,1)}
-.core .mod.on{border-color:transparent;background:linear-gradient(90deg,var(--o2),var(--o1));color:#fff;box-shadow:0 6px 20px -8px var(--glow)}
-.core .mod em{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--o1)}
-.core .mod.on em{color:#fff}
-.outs .node.final{border-color:rgba(146,151,163,.45)}
-.checkl{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
-.checkl li{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
-.checkl li::before,.ck li::before{content:"";flex:none;width:15px;height:15px;border-radius:4px;box-shadow:0 0 10px -2px var(--glow);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M4.2 8.3 L6.8 10.7 L11.8 5.4' fill='none' stroke='white' stroke-width='1.8'/></svg>") center/15px no-repeat,linear-gradient(180deg,#9297A3,#646B78)}
-.wire{fill:none;stroke:rgba(146,151,163,.35);stroke-width:1.3}
-.pulse{fill:none;stroke:#DBDEE3;stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 0 5px rgba(104,111,125,.95));opacity:0}
-.dot{fill:#111114;stroke:#9297A3;stroke-width:1.5}
+.flow{position:relative;display:grid;gap:56px}
+.flow svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.flow .wire{fill:none;stroke:rgba(255,255,255,.22);stroke-width:1.3}
+.flow .dot{fill:var(--bg);stroke:rgba(255,255,255,.5);stroke-width:1.3}
+.flow .pulse{fill:none;stroke:var(--p1);stroke-width:2;stroke-linecap:round;opacity:0}
+.side{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.node{position:relative;z-index:1;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px}
+.node b{display:block;font-size:14px}
+.node small{display:block;font-size:12.5px;color:var(--dim);line-height:1.4;margin-top:2px}
+.core{position:relative;z-index:1;background:var(--card);border:1px solid rgba(160,140,255,.45);border-radius:18px;overflow:hidden}
+.core .bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.core .bar i{width:8px;height:8px;border-radius:50%;background:var(--p2)}
+.mods{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
+.mod{padding:10px 12px;border-radius:10px;border:1px solid var(--line);font-size:13.5px}
+.mod em{font-style:normal;color:var(--p1);margin-right:8px;font-size:12px}
+.mod.on{background:var(--p2);border-color:transparent}
+.mod.on em{color:#fff}
+.checkl{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;font-size:12.5px;color:var(--muted)}
+.checkl li::before{content:"✓";display:inline-grid;place-items:center;width:15px;height:15px;margin-right:7px;border-radius:4px;background:rgba(255,255,255,.12);font-size:10px}
 
-/* Split with ring */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:80px}
-.split h3{font-size:clamp(24px,2.4vw,30px);line-height:1.2}
-.split p{margin-top:14px;color:var(--dim);font-size:15px}
-.ck{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
-.ck li{display:flex;gap:10px;font-size:14px;color:var(--muted)}
-.ck li::before{margin-top:3px}
-.ck.no li::before{background:rgba(255,255,255,.08) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M5.5 5.5 L10.5 10.5 M10.5 5.5 L5.5 10.5' fill='none' stroke='rgba(255,255,255,.55)' stroke-width='1.5'/></svg>") center/15px no-repeat;box-shadow:none}
-.ringcard{position:relative;min-height:440px;padding:28px;overflow:hidden}
-.ring{position:absolute;right:-140px;bottom:-200px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,#0B0B0D 52%,transparent 53%);will-change:transform}
-.ring::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 200deg,transparent,rgba(146,151,163,.95) 60deg,#E1E3E7 80deg,rgba(93,99,111,.9) 100deg,transparent 170deg);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 26px),#000 calc(100% - 25px));mask:radial-gradient(farthest-side,transparent calc(100% - 26px),#000 calc(100% - 25px));filter:blur(2px)}
-.ring::after{content:"";position:absolute;inset:-40px;border-radius:50%;background:conic-gradient(from 200deg,transparent,rgba(104,111,125,.6) 70deg,transparent 160deg);filter:blur(40px)}
-.sess{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;max-width:320px}
-.sess .s{display:flex;gap:14px;align-items:center;padding:14px;border-radius:14px;border:1px solid var(--line-2);background:rgba(17,17,20,.85);backdrop-filter:blur(10px)}
-.sess .s .ic{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,var(--o1),var(--o2));box-shadow:0 0 20px -2px var(--glow);flex:none}
-.sess .s.dim{opacity:.55}
-.sess .s.dim .ic{background:#1E1E22;box-shadow:none}
-.sess b{display:block;font-size:14px}
-.sess small{font-size:12px;color:var(--dim)}
-
-/* Finder */
-.finder{max-width:780px;margin:44px auto 0;border-radius:18px;background:var(--card);border:1px solid var(--line-2)}
-.fsearch{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
-.fsearch input{flex:1;background:transparent;border:0;color:#fff;font:inherit;font-size:15px;outline:none}
-.fsearch input::placeholder{color:var(--faint)}
-.fsearch .go{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#fff;background:linear-gradient(180deg,var(--o1),var(--o2));box-shadow:0 0 16px var(--glow)}
-.flist{padding:10px 18px 16px;max-height:340px;overflow:auto}
-.flabel{font-size:11.5px;color:var(--dim);padding:6px 0 8px;display:flex;justify-content:space-between}
-.frow{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center;padding:8px 0}
-.frow .nm{display:flex;align-items:center;gap:10px;font-size:13.5px}
-.frow .nm em{font-style:normal;font-size:11px;color:var(--dim)}
-.frow .nm i{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:rgba(104,111,125,.14);border:1px solid rgba(146,151,163,.35);font-style:normal;font-family:var(--mono);font-size:10px;color:var(--o1)}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-size:11.5px;padding:5px 10px;border-radius:7px;background:rgba(255,255,255,.035);border:1px solid var(--line);color:var(--dim);transition:all .4s}
-.chip.hit{color:#fff;border-color:transparent;background:linear-gradient(90deg,var(--o2),var(--o1));box-shadow:0 6px 18px -8px var(--glow)}
-.fempty{padding:18px 0;color:var(--dim);font-size:13px}
-.below{text-align:center;color:var(--dim);font-size:13px;margin-top:22px}
+/* Leistungen */
+.svcs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.svcs .card{padding:16px}
+.svc h3{font-size:15px}
+.svc .num{font-size:12px;color:var(--p1);font-weight:700}
+.svc h3{margin-top:4px}
+.svc .chips{margin-top:12px}
+.svc .chips{gap:6px}
+.svc .chips span{font-size:11.5px;padding:4px 9px}
 
 /* Mentor */
-.mentor{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:20px;margin-top:52px}
-.portrait{min-height:520px;padding:0}
-.portrait .img{position:absolute;inset:0;background:url(adin.jpg) 50% 32%/cover no-repeat;transition:transform 1.6s cubic-bezier(.16,1,.3,1)}
-.portrait:hover .img{transform:scale(1.05)}
-.portrait .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,10,0) 50%,rgba(8,8,10,.92)),radial-gradient(80% 50% at 50% 110%,rgba(104,111,125,.45),transparent 70%)}
-.portrait .who{position:absolute;z-index:1;left:22px;right:22px;bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
-.portrait .who b{display:block;font-size:22px;font-weight:700}
-.portrait .who span{font-size:13px;color:var(--muted)}
-.bio{padding:34px;display:flex;flex-direction:column;gap:18px;justify-content:center}
-.bio h3{font-size:clamp(24px,2.4vw,32px);line-height:1.15}
-.bio > p{color:var(--dim);font-size:15px}
-.svc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.svc div{padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0C0C0E;font-size:13px;color:var(--muted)}
-.quote{padding-top:18px;border-top:1px solid var(--line)}
-.quote p{font-size:clamp(20px,2vw,24px);line-height:1.3;font-weight:600}
-.quote span{display:block;margin-top:8px;font-size:12.5px;color:var(--dim)}
-.slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
-.ghostc{border-radius:16px;border:1px dashed var(--line-2);padding:18px;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--faint);min-height:130px}
-.ghostc b{color:var(--dim);font-weight:600}
-.ghostc .free{margin-top:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em}
+.mentor{display:grid;gap:14px}
+.portrait{position:relative;border-radius:var(--r);overflow:hidden;min-height:420px;background:#111 url(adin.jpg) 50% 30%/cover no-repeat;border:1px solid var(--line)}
+.portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.85))}
+.portrait .who{position:absolute;left:20px;right:20px;bottom:18px;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;font-size:13px;color:var(--muted)}
+.portrait .who b{display:block;font-size:20px;color:#fff}
+.bio h3{font-size:22px;margin-top:10px}
+.bio p{margin-top:12px}
+.tags{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.tags span{padding:10px 12px;border-radius:12px;border:1px solid var(--line);font-size:13px;color:var(--muted)}
+.quote{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.quote p{font-size:19px;font-weight:600;color:#fff;line-height:1.35}
+.quote span{display:block;margin-top:6px;font-size:13px;color:var(--dim)}
 
-/* Steps */
-.steps{list-style:none;margin:52px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-.steps li{padding:22px}
-.steps .n{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:9px;font-family:var(--mono);font-size:12px;color:var(--o1);border:1px solid rgba(146,151,163,.4);background:rgba(104,111,125,.08)}
-.steps li:first-child .n{background:linear-gradient(180deg,var(--o1),var(--o2));color:#fff;border-color:transparent;box-shadow:0 0 18px var(--glow)}
-.steps h3{margin-top:16px;font-size:16px;font-weight:700}
-.steps p{margin-top:6px;font-size:13.5px;color:var(--dim)}
-.todo{font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:center;margin-top:20px}
-.fit{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
-.fit > div{padding:24px}
-.fit h3{font-size:16px;font-weight:700}
+/* Ablauf */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.steps .n{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:10px;border:1px solid var(--line2);font-size:13px;color:var(--p1);margin-bottom:12px}
+.steps li:first-child .n{background:var(--p2);border-color:transparent;color:#fff}
+.steps p{margin-top:6px}
+.fit{display:grid;gap:12px;margin-top:12px}
+.note{text-align:center;margin-top:18px;font-size:13px;color:var(--dim)}
 
-/* Pricing */
-.plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:780px;margin:48px auto 0;align-items:stretch}
-.plan{padding:26px;display:flex;flex-direction:column;gap:14px}
-.plan .pr{font-size:34px;font-weight:700;letter-spacing:-0.02em;line-height:1}
-.plan .pr small{font-size:14px;color:var(--dim);font-weight:500}
-.plan .nm{font-size:14px;color:var(--muted);font-weight:600}
-.plan > p{font-size:13.5px;color:var(--dim)}
-.plan .act{margin-top:6px}
-.plan .act .btn,.plan .act .ghost{width:100%;justify-content:center}
-.plan.hot{border-color:rgba(146,151,163,.5);box-shadow:0 0 0 1px rgba(104,111,125,.15),0 30px 80px -40px rgba(104,111,125,.6)}
-.plan.hot::before{content:"";position:absolute;left:-20%;right:-20%;top:-50%;height:80%;background:radial-gradient(closest-side,rgba(104,111,125,.22),transparent 70%);pointer-events:none}
-.plan .ck{margin-top:4px}
-.plan .ck li{font-size:13px}
+/* Vergleich */
+.vs{display:grid;gap:12px;max-width:900px;margin:0 auto}
+.vs .label{font-size:13px;font-weight:600;color:var(--dim)}
+.vs .big{display:block;font-family:var(--head);font-weight:700;font-size:28px;letter-spacing:-.02em;margin-top:4px}
+.vs .solo .big{color:var(--dim)}
+.vs .hot{border-color:rgba(160,140,255,.5)}
+.cta{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:26px;text-align:center}
+.cta small{font-size:12.5px;color:var(--dim)}
 
 /* FAQ */
-.ftabs{display:flex;justify-content:center;gap:4px;margin-top:26px;flex-wrap:wrap}
-.ftab{font:inherit;font-size:13px;color:var(--dim);background:none;border:0;padding:8px 14px;border-radius:9px;cursor:pointer;transition:all .4s}
-.ftab:hover{color:#fff}
-.ftab[aria-selected="true"]{color:#fff;background:rgba(104,111,125,.12);box-shadow:inset 0 -2px 0 var(--o1)}
-.faqgrid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;max-width:880px;margin:22px auto 0;align-items:start}
-.qlist{display:flex;flex-direction:column;gap:6px}
-.q{display:flex;justify-content:space-between;align-items:center;gap:14px;width:100%;padding:15px 18px;border-radius:12px;background:transparent;border:1px solid transparent;color:var(--muted);font:inherit;font-size:14px;text-align:left;cursor:pointer;transition:all .5s cubic-bezier(.16,1,.3,1)}
-.q:hover{color:#fff;background:rgba(255,255,255,.03)}
-.q[aria-selected="true"]{color:#fff;background:var(--card);border-color:var(--line-2)}
-.q svg{flex:none;transition:transform .5s cubic-bezier(.16,1,.3,1)}
-.q[aria-selected="true"] svg{transform:rotate(-90deg);color:var(--o1)}
-.qans{padding:22px;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;position:sticky;top:96px}
-.qans p{font-size:14.5px;color:var(--muted)}
-.qans p.swap{animation:fade .5s cubic-bezier(.16,1,.3,1)}
-.qnav{display:flex;justify-content:flex-end;gap:8px}
-.qnav button{width:32px;height:32px;border-radius:9px;border:1px solid var(--line-2);background:transparent;color:#fff;cursor:pointer;transition:all .4s}
-.qnav button:hover{border-color:rgba(146,151,163,.6);background:rgba(104,111,125,.1)}
+.faq{max-width:780px;margin:0 auto;display:grid;gap:10px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.faq summary{list-style:none;cursor:pointer;padding:16px 50px 16px 18px;position:relative;font-weight:600;font-size:15px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--p1);transition:transform .25s}
+.faq details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+.faq details p{padding:0 18px 16px;color:var(--dim);font-size:15px}
 
-/* Final CTA */
-.final{margin-top:clamp(110px,12vw,160px)}
-.finalbox{position:relative;border-radius:24px;padding:clamp(28px,4vw,48px);display:grid;grid-template-columns:1fr 1.05fr;gap:36px;align-items:center;overflow:visible}
-.finalbox .bottomglow{position:absolute;left:4%;right:4%;bottom:-2px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--o2),var(--o1),var(--o2),transparent);box-shadow:0 0 40px 6px rgba(104,111,125,.55)}
-.finalbox h2{font-size:clamp(28px,3.2vw,40px);line-height:1.15}
-.finalbox p{margin-top:12px;color:var(--dim);font-size:15px}
-.finalbox .row{justify-content:flex-start;margin-top:24px}
-.mini{border-radius:14px;border:1px solid var(--line-2);background:#0C0C0E;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 30px 60px -30px rgba(0,0,0,.9)}
-.mini .cb{display:flex;gap:6px;align-items:center;font-size:11.5px;color:var(--dim);padding-bottom:8px;border-bottom:1px solid var(--line)}
-.mini .cb i{width:7px;height:7px;border-radius:50%;background:#2A2A2E}.mini .cb i:first-child{background:var(--o2)}
-.mini .g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* Abschluss */
+.final{margin-top:72px}
+.finalbox{text-align:center;padding:36px 22px;background:radial-gradient(80% 70% at 50% 0%,rgba(115,86,255,.22),transparent 70%),linear-gradient(180deg,var(--card2),var(--card))}
+.finalbox h2{font-size:clamp(28px,4.4vw,44px)}
+.finalbox p{max-width:520px;margin:12px auto 0}
+.finalbox .btns{display:flex;flex-direction:column;gap:10px;margin-top:22px}
 
 /* Footer */
-footer{position:relative;margin-top:clamp(90px,10vw,130px);border-top:1px solid var(--line)}
-.fgrid{display:grid;grid-template-columns:1.5fr repeat(3,minmax(0,1fr));gap:28px;padding-block:52px 28px}
-.fgrid h4{margin:0 0 12px;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.fgrid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--muted)}
-.fgrid a:hover{color:var(--o1)}
-.fbig{margin-top:18px;font-size:clamp(22px,2.4vw,30px);font-weight:600;line-height:1.2;max-width:16ch}
-.fbase{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:18px 32px;font-size:12px;color:var(--faint);border-top:1px solid var(--line)}
+footer{margin-top:80px;padding:40px 0 calc(28px + env(safe-area-inset-bottom));background:#000;border-top:1px solid var(--line)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:28px 16px}
+.fgrid .brand{grid-column:1/-1}
+.fgrid .brand p{margin-top:12px;font-size:20px;font-weight:600;line-height:1.3;max-width:280px}
+.fgrid h4{margin:0 0 10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.fgrid ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+.fbase{margin-top:32px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--dim);display:grid;gap:8px}
 
-/* Modal */
-.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;visibility:hidden;pointer-events:none}
-.modal.open{visibility:visible;pointer-events:auto}
-.scrim{position:absolute;inset:0;background:rgba(4,4,6,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transition:opacity .6s cubic-bezier(.16,1,.3,1)}
-.modal.open .scrim{opacity:1}
-.sheet{position:relative;width:100%;max-width:520px;max-height:calc(100vh - 32px);overflow:auto;border-radius:20px;background:radial-gradient(90% 40% at 50% 0%,rgba(104,111,125,.16),transparent 70%),#111114;border:1px solid rgba(146,151,163,.3);box-shadow:0 0 90px -30px rgba(104,111,125,.7),0 40px 120px -30px rgba(0,0,0,.95);opacity:0;transform:translateY(18px) scale(.97);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
-.modal.open .sheet{opacity:1;transform:none}
-.sheet-head{padding:24px 24px 0;display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
-.sheet-head h2{font-size:22px;margin-top:12px}
-.sheet-head p{margin-top:6px;font-size:13px;color:var(--dim)}
-.x{flex:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);color:#fff;font-size:18px;cursor:pointer;transition:transform .6s cubic-bezier(.16,1,.3,1),background-color .4s}
-.x:hover{transform:rotate(90deg);background:rgba(255,255,255,.08)}
-.prog{margin:20px 24px 0;display:flex;gap:6px}
-.prog i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.1);position:relative;overflow:hidden}
-.prog i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--o1),var(--o2));transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.16,1,.3,1)}
-.prog i.on::after{transform:scaleX(1)}
-.stepmeta{margin:10px 24px 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--dim)}
-.sheet form{padding:18px 24px 24px}
-.pane{display:none;flex-direction:column;gap:12px;animation:fade .6s cubic-bezier(.16,1,.3,1)}
-.pane.on{display:flex}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.f{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--muted)}
-.f input,.f select,.f textarea{width:100%;background:#0B0B0D;border:1px solid var(--line-2);border-radius:10px;color:#fff;font:inherit;font-size:15px;padding:12px 14px;transition:border-color .4s,box-shadow .4s}
+/* ---------- Modals ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal.open{display:flex}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.78)}
+.sheet{position:relative;width:100%;max-height:90dvh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  background:#121217;border:1px solid var(--line2);border-bottom:0;border-radius:22px 22px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom))}
+.x{position:absolute;top:14px;right:14px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.08);font-size:20px;line-height:1;cursor:pointer}
+.mhead{padding-right:46px}
+.mhead h2{font-size:21px;letter-spacing:-.02em}
+.mhead p{margin-top:4px;font-size:13px;color:var(--dim)}
+.qhead{display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:center;padding-right:46px}
+.qhead img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1.5px solid var(--line2)}
+.qhead h2{font-size:18px;letter-spacing:-.02em;line-height:1.2}
+.qhead p{font-size:12.5px;color:var(--dim);margin-top:3px;line-height:1.35}
+.prog{display:flex;gap:6px;margin:14px 0 4px}
+.prog i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.1)}
+.prog i.on{background:var(--p2)}
+.meta{font-size:11px;letter-spacing:.12em;color:var(--dim)}
+form{display:grid;gap:10px;margin-top:14px}
+.pane{display:none;gap:10px}
+.pane.on{display:grid}
+.f{display:grid;gap:6px;font-size:13px;color:var(--muted)}
+.f input,.f select,.f textarea{width:100%;font:inherit;font-size:16px;color:#fff;background:#0b0b0f;border:1px solid var(--line2);border-radius:12px;padding:12px 14px}
 .f select option{color:#000}
-.f textarea{resize:vertical;min-height:84px}
-.f input::placeholder,.f textarea::placeholder{color:var(--faint)}
-.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:rgba(146,151,163,.75);box-shadow:0 0 0 4px rgba(104,111,125,.16)}
-.opt{display:flex;flex-direction:column;gap:7px}
-.opt > span{font-size:12.5px;color:var(--muted)}
-.radios{display:grid;gap:7px}
-.radios label{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--line-2);border-radius:10px;background:#0B0B0D;cursor:pointer;font-size:14px;transition:all .5s cubic-bezier(.16,1,.3,1)}
-.radios label:hover{border-color:rgba(146,151,163,.45)}
-.radios input{accent-color:var(--o2);width:15px;height:15px;flex:none}
-.radios label:has(input:checked){border-color:rgba(146,151,163,.75);background:rgba(104,111,125,.1)}
-.consent{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--muted)}
-.consent input{width:17px;height:17px;margin-top:1px;accent-color:var(--o2);flex:none}
-.consent a{text-decoration:underline}
-.err{font-size:12.5px;color:#C8CCD4;min-height:1.2em;margin-top:10px}
-.sheet-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:4px}
-.back{background:none;border:0;color:var(--muted);font:inherit;font-size:13.5px;cursor:pointer;padding:10px 4px}
-.back:hover{color:#fff}
-.trust-mini{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:var(--dim);margin-top:12px}
-.trust-mini span::before{content:"✓ ";color:var(--o1)}
-.done{text-align:center;align-items:center;padding:6px 0}
-.done .ok{width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,var(--o1),var(--o2));display:grid;place-items:center;box-shadow:0 0 40px var(--glow)}
-.done h3{font-size:19px;margin-top:6px}
-.done p{color:var(--dim);font-size:13.5px;max-width:38ch}
-body.lock{overflow:hidden}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--p1)}
+.f input::placeholder,.f textarea::placeholder{color:rgba(255,255,255,.35)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.radios{display:grid;gap:8px}
+.radios label{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--line2);border-radius:12px;font-size:14px;cursor:pointer}
+.radios label:has(input:checked){border-color:var(--p1);background:rgba(115,86,255,.12)}
+.radios input,.consent input{accent-color:var(--p2);width:17px;height:17px;flex:none;margin:0}
+.radios.three{grid-template-columns:repeat(3,1fr)}
+.radios.three label{justify-content:center;padding:11px 6px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--dim);line-height:1.4}
+.err{font-size:13px;color:#FFB4B4;min-height:0}
+.err:empty{display:none}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
+.back{background:none;border:0;color:var(--dim);cursor:pointer;padding:10px 0}
+.small{text-align:center;font-size:11.5px;color:var(--dim)}
+.done{text-align:center;padding:20px 0 6px}
+.done .ok{width:56px;height:56px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:var(--p2);font-size:26px}
+.done p{color:var(--dim);font-size:14px;margin:6px 0 16px}
+[hidden]{display:none!important}
 
-
-/* Hero v2: grid, glowing glass diamonds, framed VSL */
-.hero{position:relative;padding-top:clamp(120px,13vw,160px);text-align:center;overflow:hidden;isolation:isolate}
-.hero .grid{position:absolute;inset:0;z-index:-2;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:56px 56px;-webkit-mask:radial-gradient(70% 60% at 50% 30%,#000 30%,transparent 80%);mask:radial-gradient(70% 60% at 50% 30%,#000 30%,transparent 80%)}
-.hero::before{content:"";position:absolute;left:50%;top:-180px;width:900px;height:500px;transform:translateX(-50%);z-index:-1;background:radial-gradient(closest-side,rgba(104,111,125,.16),transparent 70%);filter:blur(20px)}
-.hero::after{content:"";position:absolute;left:0;right:0;bottom:120px;height:560px;z-index:-1;-webkit-mask:linear-gradient(180deg,#000 55%,transparent);mask:linear-gradient(180deg,#000 55%,transparent);background:radial-gradient(40% 70% at 0% 100%,rgba(93,99,111,.55),transparent 70%),radial-gradient(40% 70% at 100% 100%,rgba(93,99,111,.55),transparent 70%);filter:blur(10px)}
-.dia{position:absolute;top:40px;width:clamp(240px,26vw,380px);aspect-ratio:1;z-index:-1;will-change:transform}
-.dia.l{left:clamp(-260px,-14vw,-120px)}
-.dia.r{right:clamp(-260px,-14vw,-120px)}
-.dia i{position:absolute;inset:0;border-radius:22%;transform:rotate(45deg)}
-.dia i:first-child{background:linear-gradient(135deg,rgba(170,150,255,.95) 0%,rgba(98,64,220,.85) 30%,rgba(52,30,130,.55) 65%,rgba(10,6,22,.1) 100%);border:1px solid rgba(214,204,255,.55);box-shadow:inset 0 0 40px rgba(214,204,255,.35),0 0 80px -10px rgba(110,75,240,.6)}
-.dia.r i:first-child{background:linear-gradient(225deg,rgba(170,150,255,.95) 0%,rgba(98,64,220,.85) 30%,rgba(52,30,130,.55) 65%,rgba(10,6,22,.1) 100%)}
-.dia i:last-child{inset:-18%;background:none;border:1px solid rgba(170,150,255,.28);box-shadow:0 0 40px -10px rgba(110,75,240,.4);border-radius:24%}
-.dia::after{content:"";position:absolute;left:10%;right:10%;top:44%;height:2px;background:linear-gradient(90deg,transparent,rgba(232,226,255,.9),transparent);transform:rotate(45deg);filter:blur(.5px);opacity:.7}
-.hcopy{position:relative}
-.pill .av{width:24px;height:24px;border-radius:50%;background:url(adin.jpg) 50% 30%/cover no-repeat;border:1px solid rgba(255,255,255,.3)}
-.hero h1{margin:26px auto 0;display:flex;flex-direction:column;gap:4px;font-size:clamp(28px,4.2vw,52px);line-height:1.08;text-transform:uppercase;letter-spacing:-0.01em;max-width:none}
-.hero h1 .l1{font-weight:300;color:rgba(255,255,255,.55)}
-.hero h1 .l2{font-weight:600;color:#fff}
-.hero .lead{margin:22px auto 0;max-width:600px;color:var(--muted);font-size:15px}
-.hero .row{margin-top:32px}
-.btn-dark{position:relative;display:inline-flex;align-items:center;gap:14px;padding:14px 24px;border-radius:10px;background:linear-gradient(180deg,#1C1C20,#121214);color:#fff;font-weight:600;font-size:15px;border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 -2px 0 var(--o2),0 10px 30px -8px rgba(93,99,111,.7),0 0 0 4px rgba(93,99,111,.06);transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s,border-color .5s}
-.btn-dark:hover{transform:translateY(-2px);border-color:rgba(191,195,204,.5);box-shadow:inset 0 -2px 0 var(--o1),0 16px 40px -8px rgba(93,99,111,.95),0 0 0 6px rgba(93,99,111,.08)}
-.btn-dark .ar{font-size:18px;transition:transform .5s cubic-bezier(.16,1,.3,1)}
-.btn-dark:hover .ar{transform:translateX(4px)}
-.vstage{margin-top:clamp(56px,7vw,90px);perspective:1400px}
-.vframe{position:relative;max-width:920px;margin:0 auto;padding:12px;border-radius:22px;background:linear-gradient(180deg,rgba(23,25,27,.6),rgba(14,10,10,.7));border:1px solid rgba(146,151,163,.45);box-shadow:0 -12px 50px -18px rgba(93,99,111,.9),inset 0 1px 0 rgba(202,206,213,.35);transform-origin:50% 100%;will-change:transform}
-.vframe::before{content:"";position:absolute;left:12%;right:12%;top:-1px;height:1px;background:linear-gradient(90deg,transparent,#DBDEE3,transparent)}
-.vframe .vsl{max-width:none;box-shadow:0 30px 80px -30px rgba(0,0,0,.9)}
-.strip{margin-top:56px}
-@media (max-width:760px){.dia{opacity:.55}.dia.l{left:-180px}.dia.r{right:-180px}}
-
-
-/* Glass layer: light behind, frosted panels in front (colors unchanged) */
-.glow-stage{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.glow-stage .gb{position:absolute;border-radius:50%;filter:blur(80px);will-change:transform}
-.glow-stage .g1{width:46vmax;height:30vmax;right:-12vmax;top:30vh;background:radial-gradient(closest-side,rgba(104,111,125,.26),transparent 70%)}
-.glow-stage .g2{width:40vmax;height:40vmax;left:-16vmax;top:75vh;background:radial-gradient(closest-side,rgba(93,99,111,.18),transparent 70%)}
-.glow-stage svg{position:absolute;left:50%;top:50%;width:150vmax;height:150vmax;margin:-75vmax 0 0 -75vmax;opacity:.3;will-change:transform}
-.card,.node,.finder,.mini,.qans{background:radial-gradient(120% 60% at 0% 0%,rgba(255,255,255,.09),transparent 55%),linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.012)),rgba(16,16,20,.42) !important;border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(26px) saturate(1.5);-webkit-backdrop-filter:blur(26px) saturate(1.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(255,255,255,.03),0 30px 80px -40px rgba(0,0,0,.9)}
-.card{border-radius:26px}
-.card:hover{border-color:rgba(202,206,213,.4)}
-.plan.hot,.core,.outs .node.final{border-color:rgba(191,195,204,.55) !important;box-shadow:inset 0 1px 0 rgba(227,229,233,.28),0 0 0 1px rgba(104,111,125,.12),0 0 60px -14px rgba(104,111,125,.55),0 30px 80px -40px rgba(0,0,0,.9)}
-.mrow,.svc div,.tools i,.radios label,.f input,.f select,.f textarea,.sess .s,.chip{background:rgba(255,255,255,.035);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.mrow.hl,.chip.hit{background:linear-gradient(90deg,var(--o2),var(--o1))}
-.sheet{background:radial-gradient(90% 40% at 50% 0%,rgba(104,111,125,.16),transparent 70%),linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015)),rgba(16,16,20,.62);backdrop-filter:blur(30px) saturate(1.5);-webkit-backdrop-filter:blur(30px) saturate(1.5)}
-.top.scrolled{background:rgba(0,0,0,.45);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5)}
-.vframe{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transform:none!important}
-.ghost{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-
-
-/* VSL thumbnail */
-.vframe .vsl{background:#0A0614 url(vsl-poster-weiss.jpg) center/cover no-repeat}
-.vframe .vsl .bar{display:none}
-.vframe .vsl::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 65%,rgba(0,0,0,.7));transition:background-color .6s}
-.vframe .vsl:hover::after{background-color:rgba(0,0,0,.12)}
-.vframe .vsl .pb{left:50%;top:66%;z-index:1}
-.vframe .vsl .vt{z-index:1}
-.vframe .vsl .floor{display:none}
-
-
-/* Dark red ground */
-body{background:radial-gradient(120% 70% at 50% 0%,#131417 0%,#0B0C0D 40%,#030404 100%) fixed,#09090A}
-.top.scrolled{background:rgba(13,13,15,.55)}
-
-/* Bekannt aus */
-.press{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;margin-top:44px}
-.press .yt{padding:12px;display:flex;flex-direction:column}
-.ytf{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:radial-gradient(70% 90% at 50% 100%,rgba(93,99,111,.22),transparent 70%),#0A0606;border:1px solid rgba(255,255,255,.08)}
-.ytf iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.ytph{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center}
-.ytph .ytb{width:72px;height:50px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(180deg,var(--o1),var(--o2));box-shadow:0 0 50px rgba(104,111,125,.55);margin-bottom:8px}
-.ytph b{font-size:18px;font-weight:700}.ytph small{color:rgba(255,255,255,.5);font-size:13px}
-.ymeta{display:flex;align-items:center;gap:14px;padding:14px 8px 4px;font-size:14px}
-.ymeta .src{display:inline-flex;align-items:center;gap:8px;font-weight:700}
-.ymeta .ttl{color:rgba(255,255,255,.55)}
-.arts{display:grid;gap:20px}
-.art{display:flex;flex-direction:column;gap:10px;padding:26px;text-decoration:none;color:inherit;transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .5s}
-.art:hover{transform:translateY(-4px);border-color:rgba(146,151,163,.45)!important}
-.art .pub{font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:700;letter-spacing:-.01em;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.12)}
-.art h3{margin:4px 0 0;font-size:19px;line-height:1.3;font-weight:700}
-.art p{margin:0;color:rgba(255,255,255,.6);font-size:14.5px;line-height:1.55}
-.art .more{margin-top:auto;display:inline-flex;align-items:center;gap:6px;color:var(--o1);font-weight:700;font-size:14px}
-@media(max-width:860px){.press{grid-template-columns:1fr}}
-
-/* Quick-Popup */
-.qk .sheet{max-width:460px}
-.qk-hero{position:relative;padding:26px 26px 0;text-align:center}
-.qk-av{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.25);box-shadow:0 0 0 6px rgba(255,255,255,.04),0 0 40px var(--glow)}
-.qk-badge{display:inline-block;margin-top:14px;padding:5px 12px;border-radius:999px;background:linear-gradient(180deg,var(--o1),var(--o2));font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 0 18px var(--glow)}
-.qk-hero h2{margin:14px 0 0;font-size:26px;line-height:1.15;letter-spacing:-.02em}
-.qk-hero p{margin:10px auto 0;max-width:340px;font-size:14px;color:var(--muted)}
-.qk-hero p b{color:#fff}
-.qk .x{position:absolute;right:16px;top:16px}
-.qk-facts{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px}
-.qk-facts span{font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);color:var(--muted)}
-.qk-facts b{color:#fff}
-.qk form{padding:20px 26px 24px;display:flex;flex-direction:column;gap:12px}
-.qk .btn{justify-content:center;padding:14px 18px;font-size:15px;width:100%}
-.qk-small{text-align:center;font-size:11.5px;color:var(--dim);margin-top:2px}
-.qk-done{padding:30px 26px 30px;text-align:center;display:none}
-.qk.sent form,.qk.sent .qk-facts{display:none}.qk.sent .qk-done{display:block}
-@media(max-width:520px){.qk-hero{padding:22px 20px 0}.qk-hero h2{font-size:22px}.qk-facts{display:none}.qk form{padding:16px 20px 20px;gap:10px}.qk .btn{font-size:14px}}
-.qk-done p{color:var(--muted);font-size:14px;margin:8px 0 16px}
-
-/* Abstände + Akzent */
-.sec{padding-top:clamp(84px,8.5vw,120px)}
-.shead p{margin-top:16px}
-.bento,.steps,.plans,.press,.finder,.flow{margin-top:48px}
-.split{margin-top:72px}
-.faqgrid{margin-top:28px}
-.plans,.finder{max-width:880px}
-.vstage{margin-top:clamp(44px,5vw,64px)}
-footer{margin-top:clamp(84px,9vw,120px)}
-.kicker{color:var(--o1);text-shadow:0 0 18px rgba(115,86,255,.35)}
-.hero::before{background:radial-gradient(50% 60% at 50% 0%,rgba(115,86,255,.1),transparent 70%)!important}
-.glow-stage .g1{background:radial-gradient(closest-side,rgba(115,86,255,.1),transparent 70%)!important}
-.glow-stage .g2{background:radial-gradient(closest-side,rgba(146,151,163,.08),transparent 70%)!important}
-.vframe{box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 90px -20px rgba(115,86,255,.45),0 50px 120px -40px rgba(0,0,0,.9)!important}
-.card:hover{border-color:rgba(160,140,255,.35)!important}
-.plan.hot,.plans .hot{border-color:rgba(160,140,255,.5)!important;box-shadow:0 0 70px -20px rgba(115,86,255,.55)!important}
-
-/* Logo */
-.logo-img{height:56px;margin:-6px 0;width:auto;display:block;filter:drop-shadow(0 0 12px rgba(115,86,255,.25))}
-.logo-img.lg{height:76px;margin:0 0 6px}
-@media(max-width:520px){.logo-img{height:44px}}
-
-/* Aura background (violet, grainy) */
-body{background:#07040F!important}
-.aura{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;background:#07040F}
-.aura i{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform}
-.aura .a1{width:72vmax;height:48vmax;left:-22vmax;top:-24vmax;background:radial-gradient(closest-side,rgba(232,224,255,.75),rgba(160,130,255,.5) 40%,rgba(110,70,235,.2) 65%,transparent 80%);transform:rotate(-12deg)}
-.aura .a2{width:60vmax;height:120vmax;left:38vw;top:-30vmax;background:radial-gradient(closest-side,rgba(120,80,245,.7),rgba(85,45,210,.32) 50%,transparent 75%);transform:rotate(-28deg)}
-.aura .a3{width:55vmax;height:40vmax;right:-20vmax;bottom:-18vmax;background:radial-gradient(closest-side,rgba(120,80,245,.45),transparent 72%)}
-.aura .a4{width:50vmax;height:40vmax;left:-20vmax;bottom:-20vmax;background:radial-gradient(closest-side,rgba(60,25,150,.45),transparent 72%)}
-.aura::after{content:"";position:absolute;inset:-50%;opacity:.22;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-.aura .shade{position:absolute;inset:0;border-radius:0;filter:none;background:radial-gradient(60% 45% at 50% 40%,rgba(7,4,15,.45),transparent 75%),linear-gradient(180deg,transparent,rgba(7,4,15,.3) 70%,rgba(7,4,15,.5))}
-.top.scrolled{background:rgba(14,8,28,.55)!important}
-
-.press{grid-template-columns:minmax(0,380px) minmax(0,560px)!important;justify-content:center;gap:24px!important}
-.press .ig{padding:12px;display:flex;flex-direction:column}
-.igf{position:relative;border-radius:16px;overflow:hidden;background:#0A0614;height:620px}
-.igf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
-.igf iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent}
-.igph{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;background:radial-gradient(70% 60% at 50% 100%,rgba(115,86,255,.3),transparent 70%),#0A0614;color:#fff;text-decoration:none;font-size:15px}
-.igph{border:0;cursor:pointer;font:inherit}.igph small{color:var(--dim);font-size:12px;max-width:220px;text-align:center}.igph:hover .igb{transform:scale(1.06)}.igb{transition:transform .5s cubic-bezier(.16,1,.3,1);width:60px;height:60px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#7356FF,#C13584 60%,#F77737);box-shadow:0 0 40px rgba(115,86,255,.5)}
-.press .arts{align-content:center}
-.iglink{margin-left:auto;color:var(--o1);font-weight:700;font-size:13px;text-decoration:none}
-@media(max-width:860px){.press{grid-template-columns:1fr!important}.press .ig{max-width:400px;margin:0 auto;width:100%}}
-
-.chan{display:grid;grid-template-columns:84px 1fr;gap:18px;align-items:center;padding:24px;text-decoration:none;color:inherit;transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .5s}
-.chan:hover{transform:translateY(-4px)}
-.chan img{width:84px;height:84px;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.12),0 0 40px var(--glow)}
-.chan .ckick{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--o1)}
-.chan h3{margin:4px 0 0;font-size:21px;display:flex;align-items:center;gap:8px;line-height:1.2}
-.chan p{margin:4px 0 0;font-size:13.5px;color:var(--dim)}
-.cstats{display:flex;gap:16px;margin-top:10px;font-size:13.5px;color:var(--muted)}
-.cstats b{color:#fff}
-.cbtn{grid-column:1/-1;justify-self:start;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#fff;color:#0A0614;font-weight:800;font-size:14px}
-@media(max-width:520px){.chan{grid-template-columns:64px 1fr;padding:20px}.chan img{width:64px;height:64px}.chan h3{font-size:18px}}
-
-/* Hero headline v3 */
-.hero h1{font-family:"Inter Tight",var(--sans);text-transform:none!important;font-size:clamp(34px,5.4vw,72px)!important;line-height:1.04!important;letter-spacing:-0.035em!important;gap:2px!important}
-.hero h1 .l1,.hero h1 .l2{font-weight:700!important;color:#fff!important}
-.hero h1 .gr{background:linear-gradient(90deg,#C4B5FF 0%,#A99CFF 45%,#9EC5FF 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero h1 .strike{position:relative;text-decoration:none;font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-0.01em;padding:0 .04em}
-.hero h1 .strike::after{content:"";position:absolute;left:-2%;right:-2%;top:56%;height:.07em;min-height:3px;border-radius:2px;background:linear-gradient(90deg,#7356FF,#A08CFF);transform:scaleX(0);transform-origin:left;animation:strike 0.9s cubic-bezier(.16,1,.3,1) 1.1s forwards}
-@keyframes strike{to{transform:scaleX(1)}}
-@media (prefers-reduced-motion:reduce){.hero h1 .strike::after{animation:none;transform:none}}
-
-/* Vergleich statt Preise */
-.vs .pr{font-size:28px}
-.vs .solo{opacity:.85}
-.vs .solo .pr{color:var(--dim)}
-.xl{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:10px}
-.xl li{position:relative;padding-left:28px;font-size:14px;color:var(--dim)}
-.xl li::before{content:"×";position:absolute;left:0;top:-1px;width:18px;height:18px;border-radius:5px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line-2);color:rgba(255,255,255,.45);font-size:13px;line-height:1}
-.vs .ck li{font-size:14px}
-.vs-cta{margin-top:32px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.vs-cta .btn{padding:14px 22px;font-size:15px}
-.vs-cta span{font-size:12.5px;color:var(--dim)}
-
-/* Aura gedimmt: fast schwarz, minimaler Lila-Ton */
-body,.aura{background:#030205!important}
-.aura .a1{opacity:.13}
-.aura .a2{opacity:.17}
-.aura .a3{opacity:.18}
-.aura .a4{opacity:.2}
-.aura::after{opacity:.12!important}
-.top.scrolled{background:rgba(8,6,14,.6)!important}
-
-/* Clean buttons */
-.btn{background:#7356FF!important;border-radius:999px!important;padding:12px 22px;font-weight:600;letter-spacing:-.005em;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 24px -10px rgba(115,86,255,.6)!important;transition:background-color .3s,transform .3s,box-shadow .3s}
-.btn:hover{background:#8269FF!important;transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 12px 30px -10px rgba(115,86,255,.75)!important}
-.btn::after{display:none}
-.btn.sm{padding:9px 16px;border-radius:999px!important}
-.ghost{border-radius:999px;padding:12px 22px;background:transparent;border:1px solid rgba(255,255,255,.16);font-weight:600}
-.ghost:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.3)}
-.btn-dark{gap:10px!important;padding:15px 28px!important;border-radius:999px!important;background:#fff!important;color:#0A0614!important;font-weight:600!important;font-size:15px!important;border:0!important;box-shadow:0 10px 30px -12px rgba(255,255,255,.35)!important;transition:transform .3s,box-shadow .3s,background-color .3s}
-.btn-dark:hover{transform:translateY(-1px);background:#F1EEFF!important;box-shadow:0 14px 36px -12px rgba(255,255,255,.45)!important}
-.btn-dark .ar{font-size:16px!important}
-
-/* Footer schwarz */
-footer{background:#000!important;border-top:0!important;position:relative;z-index:1}
-footer::after{display:none!important}
-footer::before{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;top:-240px!important;bottom:auto!important;width:auto!important;height:240px!important;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.55) 55%,#000 100%)!important;pointer-events:none;transform:none!important;filter:none!important;opacity:1!important;z-index:-1}
-
-/* Team */
-.slots .team{display:flex;align-items:center;gap:14px;padding:18px;border-radius:16px}
-.team .ini{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,var(--o1),var(--o2));font-weight:800;font-size:15px;color:#fff!important;margin:0!important;box-shadow:0 0 24px var(--glow)}
-.team b{display:block;font-size:15px}
-.team span{display:block;font-size:12.5px;color:var(--o1);font-weight:600;margin-top:2px}
-.team small{display:block;font-size:12.5px;color:var(--dim);margin-top:2px}
-.fbase a{color:inherit}
-
-/* Partner-Netzwerk */
-.marq{position:relative;margin-top:44px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.mtrack{display:flex;gap:16px;width:max-content;animation:marq 60s linear infinite}
-.marq:hover .mtrack{animation-play-state:paused}
-@keyframes marq{to{transform:translateX(calc(-50% - 8px))}}
-.pt{flex:none;width:210px;padding:18px 16px 16px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}
-.pt img{width:150px;height:84px;object-fit:contain;margin-bottom:8px}
-.pt b{font-size:14px;font-weight:700}
-.pt span{font-size:12px;color:var(--dim)}
-@media (prefers-reduced-motion:reduce){.mtrack{animation:none;flex-wrap:wrap;width:auto;justify-content:center}.mtrack .pt[aria-hidden]{display:none}}
-
-/* Headlines v2 */
-.shead h2,.finalbox h2{font-family:"Inter Tight",var(--sans);font-weight:700;letter-spacing:-.035em;line-height:1.06}
-.shead h2{font-size:clamp(30px,4vw,54px);max-width:860px;margin-left:auto;margin-right:auto}
-.finalbox h2{font-size:clamp(28px,3.4vw,44px)}
-.shead h2 .o,.finalbox h2 .o{background:linear-gradient(90deg,#C4B5FF 0%,#A99CFF 50%,#9EC5FF 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.shead p{font-size:16px;max-width:600px}
-
-/* Noch dunkler */
-body,.aura{background:#010102!important}
-.aura .a1{opacity:.07!important}.aura .a2{opacity:.09!important}.aura .a3{opacity:.09!important}.aura .a4{opacity:.1!important}
-.aura::after{opacity:.1!important}
-.hero::before{opacity:.5}
-.glow-stage{opacity:.5}
-.dia{opacity:.7}
-.top.scrolled{background:rgba(2,2,4,.7)!important}
-
-/* VSL Player */
-.vplay{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}
-.vplay iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-
-/* Motion */
-@keyframes up{from{opacity:0;transform:translateY(14px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.in{animation:up 1.1s cubic-bezier(.16,1,.3,1) both}
-.d1{animation-delay:.08s}.d2{animation-delay:.18s}.d3{animation-delay:.3s}.d4{animation-delay:.45s}
-.rv{transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1),filter 1.1s cubic-bezier(.16,1,.3,1)}
-.rv.pre{opacity:.001;transform:translateY(22px);filter:blur(8px)}
-
-@media (max-width:980px){
-  .menu{display:none}
-  .bento{grid-template-columns:1fr 1fr}
-  .bento .tall{grid-row:auto}
-  .flow{grid-template-columns:1fr;row-gap:16px;max-width:460px}
-  .flow svg.wires{display:none}
-  .inputs,.outs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .split,.mentor,.finalbox,.faqgrid{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr 1fr}
-  .qans{position:static}
-  .fgrid{grid-template-columns:1fr 1fr}
-  .stage{height:clamp(420px,70vw,640px)}
+/* ---------- Tablet / Desktop ---------- */
+@media (min-width:700px){
+  .stats{grid-template-columns:repeat(4,1fr)}
+  .press{grid-template-columns:minmax(0,380px) minmax(0,1fr);align-items:start;max-width:980px;margin:0 auto}
+  .media{grid-template-columns:72px 1fr}
+  .media img{width:72px;height:72px}
+  .feat{grid-template-columns:repeat(2,1fr)}
+  .svcs{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .fit,.vs{grid-template-columns:1fr 1fr}
+  .mentor{grid-template-columns:5fr 7fr}
+  .finalbox{padding:56px 40px}
+  .finalbox .btns{flex-direction:row;justify-content:center}
+  .modal{align-items:center;padding:20px}
+  .sheet{max-width:500px;border-radius:22px;border-bottom:1px solid var(--line2);padding:26px 26px 22px}
 }
-@media (max-width:620px){
-  .top .btn{display:none}
-  .bento,.steps,.fit,.plans,.slots,.row2,.svc{grid-template-columns:1fr}
-  .frow{grid-template-columns:1fr;gap:8px}
-  .fgrid{grid-template-columns:1fr}
-
-  .vslwrap{top:110px}
-  .stage{height:clamp(330px,95vw,470px)}
+@media (min-width:1000px){
+  .menu{display:flex}
+  .sec{padding-top:110px}
+  .hero{padding:70px 0 70px}
+  .hero .dia{display:block;position:absolute;top:30px;width:340px;aspect-ratio:1;border-radius:24%;z-index:-1;transform:rotate(45deg);
+    background:linear-gradient(135deg,rgba(160,140,255,.55),rgba(80,50,200,.25) 45%,transparent 80%);border:1px solid rgba(200,190,255,.35)}
+  .hero .dia.l{left:-200px}.hero .dia.r{right:-200px;background:linear-gradient(225deg,rgba(160,140,255,.55),rgba(80,50,200,.25) 45%,transparent 80%)}
+  .feat{grid-template-columns:repeat(3,1fr)}
+  .feat .praxis{grid-row:span 2}
+  .svcs{grid-template-columns:repeat(4,1fr)}
+  .svcs .card{padding:22px}
+  .svc h3{font-size:18px}
+  .svc .chips span{font-size:12.5px;padding:5px 10px}
+  .steps{grid-template-columns:repeat(4,1fr)}
+  .flow{grid-template-columns:240px minmax(0,1fr) 240px;column-gap:72px;align-items:center;max-width:1000px;margin:0 auto}
+  .side{grid-template-columns:1fr;gap:18px}
+  .fgrid{grid-template-columns:2fr 1fr 1fr 1fr}
+  .fgrid .brand{grid-column:auto}
+  .fbase{grid-template-columns:1fr auto}
+  .card{transition:border-color .3s,transform .3s var(--ease)}
+  .card:hover{border-color:rgba(160,140,255,.35)}
+  /* sanftes Einblenden nur am Desktop */
+  .rv{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  .rv.in{opacity:1;transform:none}
 }
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation:none !important;transition:none !important}
-  .rv.pre{opacity:1;transform:none;filter:none}
-}
-
-/* ===== Mobile Feinschliff ===== */
-@media (max-width:620px){
-  .wrap{padding-inline:18px}
-  .sec{padding-top:72px}
-  .shead h2{font-size:30px;line-height:1.08}
-  .shead p{font-size:15px}
-  /* Header: kompakter CTA statt Menü */
-  .top .btn.sm{display:inline-flex!important;padding:8px 14px;font-size:13px}
-  .top .wrap{display:flex;align-items:center;justify-content:space-between}
-  .logo-img{height:40px!important}
-  .logo-img.lg{height:62px!important}
-  .qans{min-height:0!important}
-  /* Hero */
-  .hero{padding-top:104px}
-  .hero h1{font-size:36px!important;line-height:1.05!important}
-  .hero .lead{font-size:15px;line-height:1.55}
-  .btn-dark{width:100%;justify-content:center}
-  .vstage{margin-top:32px}
-  .vframe{padding:6px;border-radius:16px}
-  .vframe .vsl{border-radius:11px}
-  .vframe .vsl .vt{display:none}
-  .vframe .vsl .pb{width:56px;height:56px;margin:-28px 0 0 -28px;top:62%!important}
-  .vframe .vsl .pb svg{width:18px;height:18px}
-  /* Zahlen 2x2 */
-  .strip .r{display:grid!important;grid-template-columns:1fr 1fr;gap:22px 12px;justify-items:center;text-align:center}
-  .strip .r>div{display:flex;flex-direction:column;align-items:center;gap:4px}
-  .strip .r b{font-size:30px}
-  .strip .r span{font-size:12.5px;line-height:1.3;max-width:140px}
-  /* Medien */
-  .igf{height:auto!important;aspect-ratio:9/16;max-height:600px}
-  .chan{grid-template-columns:56px 1fr!important;gap:14px!important;padding:18px!important}
-  .chan img{width:56px!important;height:56px!important}
-  .chan h3{font-size:17px!important}
-  .chan p{font-size:12.5px}
-  .cstats{gap:14px;font-size:12.5px;flex-wrap:wrap}
-  .art{padding:20px}
-  .art h3{font-size:17px}
-  /* Partner */
-  .pt{width:170px;padding:14px 12px}
-  .pt img{width:120px;height:66px}
-  .mtrack{gap:12px}
-  /* Bento */
-  .cone{min-height:200px}
-  /* Ablauf-Grafik */
-  .flow{max-width:none}
-  .outs .node,.inputs .node{height:auto!important;min-height:0!important;align-self:stretch;margin-top:0!important}
-  .ringcard{min-height:300px}
-  /* FAQ: Antwort direkt über der Liste */
-  .faqgrid .qans{order:-1}
-  .ftabs{flex-wrap:wrap;justify-content:center}
-  /* Abschluss + Footer */
-  .finalbox{padding:26px 20px!important}
-  .finalbox .btn,.finalbox .ghost{width:100%;justify-content:center}
-  .fgrid{grid-template-columns:1fr 1fr!important;gap:28px 16px}
-  .fgrid>div:first-child{grid-column:1/-1}
-  .vs-cta .btn{width:100%;justify-content:center}
-  .vs .pr{font-size:24px}
-}
-@media (max-width:380px){.hero h1{font-size:32px!important}.strip .r b{font-size:26px}}
-
-@media (max-width:620px){
-  .tools{display:flex!important;flex-wrap:wrap;justify-content:center;gap:10px!important;margin-top:20px}
-  .tools span{flex-direction:row!important;gap:8px!important;padding:8px 14px 8px 8px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);font-size:13px!important;color:var(--muted)!important}
-  .tools i{width:30px!important;height:30px!important;border-radius:50%!important;border:0!important;background:rgba(115,86,255,.18)!important}
-  .tools i svg{width:15px;height:15px;stroke:#B9A8FF}
-}
-
-@media (max-width:620px){
-  .flow svg.wires{display:block!important}
-  .flow{row-gap:56px!important}
-  .inputs,.outs{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;align-items:stretch}
-  .inputs .node{flex-direction:column;align-items:flex-start;gap:8px;padding:14px}
-  .inputs .node b,.outs .node b{font-size:14px}
-  .inputs .node small,.outs .node small{font-size:12px;line-height:1.35}
-  .outs .node{padding:14px}
-  .outs .checkl li{font-size:12px}
-}
-
-/* ===== Smooth ===== */
-:root{--ease:cubic-bezier(.22,1,.36,1);--ease-io:cubic-bezier(.65,0,.35,1)}
-html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
-.streak,#streak,.glow-stage i,.dia,#ring,.mtrack{will-change:transform}
-.rv{transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)!important}
-.rv.pre{opacity:0;transform:translate3d(0,18px,0);filter:blur(4px)}
-.in{animation-duration:1s!important;animation-timing-function:var(--ease)!important}
-.card,.chan,.art,.pt,.node,.mrow,.mod,.chip,.q,.ftab,.tools span,.tools i,.ghost,.btn,.btn-dark,.x,.radios label,.f input,.f select,.f textarea{transition-timing-function:var(--ease)!important;transition-duration:.45s!important}
-.card:hover,.chan:hover,.art:hover{transform:translate3d(0,-3px,0)}
-.btn:active,.btn-dark:active,.ghost:active{transform:scale(.98)!important;transition-duration:.12s!important}
-.scrim,.sheet{transition-duration:.5s!important;transition-timing-function:var(--ease)!important}
-.qtext.swap,#qtext.swap{animation:qfade .45s var(--ease)}
-@keyframes qfade{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
-.mtrack{animation-duration:70s!important}
-.marq:hover .mtrack{animation-play-state:paused}
-@media (max-width:620px){
-  /* weniger GPU-Last auf dem Handy = flüssigeres Scrollen */
-  .card,.node,.finder,.mini,.qans,.chan,.art,.pt,.vframe{backdrop-filter:blur(12px) saturate(1.3)!important;-webkit-backdrop-filter:blur(12px) saturate(1.3)!important}
-  .rv.pre{transform:translate3d(0,14px,0);filter:none}
-  .card:hover,.chan:hover,.art:hover{transform:none}
-  .aura i{filter:blur(60px)}
-}
-@media (hover:none){.card:hover,.chan:hover,.art:hover,.btn:hover,.btn-dark:hover{transform:none}}
-
-/* ===== Mobile Performance + Popup-Fix ===== */
-@media (max-width:820px), (hover:none){
-  /* schwere Echtzeit-Effekte aus: statischer Verlauf statt geblurrter Riesenflächen */
-  .aura i,.aura::after,.glow-stage{display:none!important}
-  .aura{background:radial-gradient(120% 60% at 0% 0%,rgba(115,86,255,.10),transparent 60%),radial-gradient(90% 50% at 100% 100%,rgba(115,86,255,.06),transparent 60%),#010102!important}
-  *,*::before,*::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-  .card,.node,.finder,.mini,.qans,.chan,.art,.pt,.vframe,.sheet{background-color:#111115!important}
-  .top.scrolled{background:rgba(4,4,8,.94)!important}
-  .dia,.streak,#streak,.mtrack,#ring{will-change:auto!important}
-  .dia{transform:none!important}
-  .rv.pre{filter:none!important}
-  .spot::after{display:none}
-  html{scroll-behavior:auto}
-}
-@media (max-width:620px){
-  .qk{padding:0!important;align-items:flex-end!important}
-  .qk .sheet{max-width:none!important;width:100%;max-height:92dvh!important;max-height:92vh;border-radius:22px 22px 0 0!important;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom)}
-  .qk .x{position:sticky!important;top:10px;float:right;margin:10px 10px -46px 0;z-index:5;width:40px;height:40px;background:rgba(30,30,36,.95)!important;font-size:22px}
-  .qk-hero{padding:18px 20px 0!important}
-  .qk-av{width:52px!important;height:52px!important}
-  .qk-badge{margin-top:10px!important}
-  .qk-hero h2{font-size:21px!important;margin-top:10px!important}
-  .qk-hero p{font-size:13px!important;margin-top:6px!important}
-  .qk form{padding:14px 20px 18px!important;gap:9px!important}
-  .qk .f input{padding:11px 13px;font-size:16px}
-  .qk .consent{font-size:12px}
-  .modal:not(.qk) .sheet{max-height:92dvh!important}
-}
-
-.qk .x{z-index:20!important}
-.qk-hero{z-index:1}
-
-/* Kein seitliches Wischen */
-html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
-body{position:relative;touch-action:pan-y pinch-zoom}
-.hero,.ringcard,.sec,footer{overflow-x:clip}
-.ring{max-width:100%}
-
-/* ===== Mobile: sofort da, keine Einblend-Effekte ===== */
-a,button,input,select,label{touch-action:manipulation}
-@media (max-width:820px), (hover:none){
-  .in{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}
-  .rv,.rv.pre{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
-  .hero h1 .strike::after{animation:none!important;transform:none!important}
-  .mtrack{animation-duration:90s!important}
-  .btn:active,.btn-dark:active,.ghost:active{transform:none!important}
-}
-
-/* ================= FINAL MOBILE CLEAN ================= */
-@media (max-width:820px), (hover:none){
-  /* Deko, die beim Scrollen Leistung kostet: komplett aus */
-  .dia,.aura,.glow-stage,.hero::before,.hero::after,.bottomglow,.cone::after{display:none!important}
-  body{background:radial-gradient(100% 40% at 50% 0%,rgba(115,86,255,.14),transparent 70%) no-repeat,#020204!important}
-  /* keine großen Leucht-Schatten, keine Übergänge */
-  *,*::before,*::after{transition:none!important;animation-duration:0s!important;animation-delay:0s!important}
-  .mtrack{animation:marq 90s linear infinite!important}
-  .card,.node,.finder,.mini,.qans,.chan,.art,.pt,.vframe,.core,.plan,.plan.hot,.plans .hot,.ringcard,.finalbox,.sheet,.vsl{box-shadow:none!important}
-  .btn,.btn-dark{box-shadow:none!important}
-  .card,.node,.finder,.mini,.qans,.chan,.art,.pt,.vframe,.finalbox{background:#0f0f13!important;border-color:rgba(255,255,255,.09)!important}
-  .plan.hot,.vs .hot{border-color:rgba(160,140,255,.55)!important}
-  .top,.top.scrolled{background:rgba(2,2,4,.96)!important}
-  /* Modal: einfache Fläche statt Blur */
-  .scrim{background:rgba(0,0,0,.82)!important}
-}
-@media (max-width:620px){
-  /* Haupt-Formular als kompaktes Bottom-Sheet */
-  #modal{padding:0!important;align-items:flex-end!important}
-  #modal .sheet{max-width:none!important;width:100%;max-height:88dvh!important;border-radius:20px 20px 0 0!important;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:env(safe-area-inset-bottom);opacity:1!important;transform:none!important}
-  #modal .sheet-head{padding:16px 18px 0!important;align-items:center}
-  #modal .sheet-head svg{display:none}
-  #modal .sheet-head h2{font-size:19px!important;margin-top:0!important}
-  #modal .sheet-head p{font-size:12.5px!important;margin-top:2px!important}
-  #modal .x{width:38px;height:38px}
-  #modal .prog{margin:12px 18px 0!important}
-  #modal .stepmeta{margin:8px 18px 0!important;font-size:10px}
-  #modal form{padding:12px 18px 16px!important}
-  #modal .pane{gap:10px}
-  #modal .radios label{padding:10px 12px;font-size:13.5px}
-  #modal .f input,#modal .f select,#modal .f textarea{padding:10px 12px;font-size:16px}
-  #modal .row2{grid-template-columns:1fr 1fr!important;gap:10px}
-  #modal .trust-mini{display:none}
-  #modal .err{margin-top:6px;min-height:0}
-  /* Quick-Popup ebenfalls ohne Animation */
-  .qk .sheet{opacity:1!important;transform:none!important;max-height:88dvh!important}
-  .qk-badge{display:none!important}
-  .qk-facts{display:none!important}
-}
-
-/* ===== Quick-Popup Mobile v3: klein & clean ===== */
-@media (max-width:620px){
-  .qk .sheet{overflow:visible!important;max-height:none!important;padding:0 0 env(safe-area-inset-bottom)!important;border-radius:22px 22px 0 0!important}
-  .qk .x{position:absolute!important;top:14px!important;right:14px!important;float:none!important;margin:0!important;width:34px!important;height:34px!important;font-size:18px!important;border-radius:50%!important;background:rgba(255,255,255,.08)!important;border:0!important}
-  .qk-hero{display:grid!important;grid-template-columns:44px 1fr;column-gap:12px;align-items:center;text-align:left!important;padding:18px 60px 0 18px!important}
-  .qk-hero>div{display:none!important}
-  .qk-av{grid-row:1/3;width:44px!important;height:44px!important;box-shadow:none!important;border-width:1.5px!important}
-  .qk-hero h2{font-size:17px!important;line-height:1.2!important;margin:0!important}
-  .qk-hero h2 br{display:none}
-  .qk-hero p{font-size:12.5px!important;line-height:1.35!important;margin:3px 0 0!important;max-width:none!important}
-  .qk-hero p b:last-child{font-weight:600}
-  .qk form{padding:14px 18px 16px!important;gap:8px!important}
-  .qk .f{font-size:0!important;gap:0!important}
-  .qk .f input{font-size:16px!important;padding:12px 14px!important;border-radius:12px!important}
-  .qk .consent{font-size:11.5px!important;line-height:1.35;margin-top:2px}
-  .qk .consent input{width:16px;height:16px}
-  .qk .btn{padding:13px 16px!important;font-size:15px!important;margin-top:2px}
-  .qk-small{font-size:11px!important}
-  .qk .err:empty{display:none}
-}
+@media (prefers-reduced-motion:reduce){.track{animation:none}.rv{opacity:1!important;transform:none!important}}
 </style>
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <linearGradient id="lgA" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#646B78" stop-opacity="0"/><stop offset=".5" stop-color="#C8CCD4"/><stop offset="1" stop-color="#646B78" stop-opacity="0"/></linearGradient>
-    <symbol id="logo" viewBox="0 0 40 40">
-      <circle cx="20" cy="20" r="19" fill="#111114" stroke="rgba(255,255,255,.18)"/>
-      <circle cx="20" cy="21" r="10" fill="#7356FF" opacity=".35" filter="url(#lgBlur)"/>
-      <g transform="translate(20 20) skewX(-16) translate(-20 -20)"><path d="M13.5 15 C14 10.2 26.5 10 26 15.2 C25.6 19 20 21.4 14.2 26.6 L26.6 26.6" fill="none" stroke="#9A85FF" stroke-width="3.6" stroke-linejoin="miter" stroke-linecap="square"/></g>
-    </symbol>
-    <filter id="lgBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
-    <symbol id="bolt" viewBox="0 0 16 16"><path d="M9 1 L3 9 H7.5 L6.5 15 L13 6.5 H8.5 Z" fill="currentColor"/></symbol>
-  </defs>
-</svg>
-<div class="aura" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i><i class="shade"></i></div>
-<div class="glow-stage" aria-hidden="true">
-  <i class="gb g1" id="gb1"></i><i class="gb g2" id="gb2"></i>
-  <svg id="streak" viewBox="0 0 1000 1000"><defs><linearGradient id="sgO" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#393D46" stop-opacity="0"/><stop offset=".45" stop-color="#646B78"/><stop offset=".62" stop-color="#9297A3"/><stop offset=".8" stop-color="#646B78"/><stop offset="1" stop-color="#393D46" stop-opacity="0"/></linearGradient><filter id="sbl"><feGaussianBlur stdDeviation="18"/></filter></defs>
-  <path d="M300 960 C 330 720, 420 600, 560 520 S 760 380, 700 160" fill="none" stroke="url(#sgO)" stroke-width="80" filter="url(#sbl)"/></svg>
-</div>
-<div class="grain" aria-hidden="true"></div>
+</head>
+<body>
 
 <header class="top" id="nav">
   <div class="wrap">
-    <a href="#top" class="mark" aria-label="Learn 2 Rent – zum Seitenanfang"><img class="logo-img" src="logo-white.png" alt="Learn 2 Rent"></a>
+    <a href="#top" aria-label="Learn 2 Rent – zum Seitenanfang"><img class="logo" src="logo-white.png" alt="Learn 2 Rent" width="140" height="40"></a>
     <nav class="menu" aria-label="Hauptnavigation">
-      <a href="#top" class="on">Start</a>
-      <a href="#vorteile">Vorteile</a>
-      <a href="#programm">Programm</a>
-      <a href="#mentor">Mentor</a>
-      <a href="#angebot">Vergleich</a>
-      <a href="#faq">FAQ</a>
+      <a href="#vorteile">Vorteile</a><a href="#leistungen">Leistungen</a><a href="#mentor">Mentor</a><a href="#vergleich">Vergleich</a><a href="#faq">FAQ</a>
     </nav>
-    <a href="#bewerbung" class="btn sm">Erstgespräch <span class="ar" aria-hidden="true">→</span></a>
+    <a href="#erstgespraech" class="btn sm js-open">Erstgespräch →</a>
   </div>
 </header>
 
 <main id="top">
 
 <section class="hero">
-  <div class="dia l" id="diaL" aria-hidden="true"><i></i><i></i></div>
-  <div class="dia r" id="diaR" aria-hidden="true"><i></i><i></i></div>
-  <div class="wrap hcopy">
-    <span class="pill in"><span class="av" role="img" aria-label="Adin Kilim"></span>Programm von Adin Kilim · Edition Rent</span>
-    <h1 class="in d1"><span class="l1"><span class="gr">Deine eigene Autovermietung</span></span><span class="l2">mit System statt <s class="strike">Bauchgefühl</s>.</span></h1>
-    <p class="lead in d2">Von der Firmengründung über Fahrzeuge und Verträge bis zur Kundengewinnung – alles aus einer Hand, mit dem Praxiswissen aus Edition Rent.</p>
-    <div class="row in d3">
-      <a href="#bewerbung" class="btn-dark">Erstgespräch anfragen <span class="ar" aria-hidden="true">→</span></a>
-    </div>
-  </div>
-  <div class="wrap vstage in d4">
-    <div class="vframe" id="vframe">
-      <a href="#bewerbung" class="vsl" id="vsl" aria-label="Video von Adin Kilim – erscheint in Kürze, Erstgespräch anfragen">
-        <span class="bar"><i></i><i></i><i></i><span style="margin-left:6px">Adin Kilim · Warum viele Vermietungen am Anfang scheitern</span></span>
-        <span class="pb"><svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><path d="M9.5 6 L20 13 L9.5 20 Z" fill="#fff"/></svg></span>
-        <span class="vt"><span>Video ansehen</span><span>VIDEO FOLGT</span></span>
-      </a>
-    </div>
-  </div>
-  <div class="wrap strip">
-    <small>Aus der Praxis von Edition Rent</small>
-    <div class="r">
-      <div><b data-count="65" data-suffix="+">65+</b><span>Fahrzeuge bei Edition Rent</span></div>
-      <div><b data-count="148" data-suffix="+">148+</b><span>Gründer begleitet</span></div>
-      <div><b data-count="7">7</b><span>Jahre Branchenerfahrung</span></div>
-      <div><b data-count="25">25</b><span>Module im Videokurs</span></div>
+  <div class="dia l" aria-hidden="true"></div><div class="dia r" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="pill"><img src="adin.jpg" alt="" width="26" height="26">Programm von Adin Kilim · Edition Rent</span>
+    <h1><span class="grad">Deine eigene Autovermietung</span><span>mit System statt <s class="strike">Bauchgefühl</s>.</span></h1>
+    <p class="lead">Von der Firmengründung über Fahrzeuge und Verträge bis zur Kundengewinnung – alles aus einer Hand, mit dem Praxiswissen aus Edition Rent.</p>
+    <a href="#erstgespraech" class="btn light js-open">Erstgespräch anfragen →</a>
+    <a href="#erstgespraech" class="vsl js-open" aria-label="Video folgt – Erstgespräch anfragen">
+      <img src="vsl-poster-weiss.jpg" alt="Learn 2 Rent – vom Start bis 65+ Autos" width="1280" height="720" fetchpriority="high">
+      <span class="play" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span>
+      <span class="tag">VIDEO FOLGT</span>
+    </a>
+    <div class="stats">
+      <div><b>65+</b><span>Fahrzeuge bei Edition Rent</span></div>
+      <div><b>148+</b><span>Gründer begleitet</span></div>
+      <div><b>7</b><span>Jahre Branchenerfahrung</span></div>
+      <div><b>25</b><span>Module im Videokurs</span></div>
     </div>
   </div>
 </section>
 
 <section class="sec" id="presse">
   <div class="wrap">
-    <div class="shead">
-      <span class="kicker">Bekannt aus</span>
-      <h2>Bekannt aus <span class="o">TV, YouTube und Presse</span></h2>
-    </div>
+    <div class="head"><span class="kick">Bekannt aus</span><h2>Bekannt aus <span class="grad">TV, YouTube und Presse</span></h2></div>
     <div class="press">
-      <div class="card rv ig">
-        <div class="igf">
-          <video src="hamid-reel.mp4" poster="hamid-poster.jpg" controls playsinline preload="none" aria-label="Video: Adin Kilim zu Gast bei Hamid"></video>
-        </div>
-        <div class="ymeta"><span class="src"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="var(--o2)"/><path d="M10 8.5v7l6-3.5z" fill="#fff"/></svg>Video</span><span class="ttl">Adin zu Gast bei Hamid</span></div>
+      <div class="card reel rv">
+        <video src="hamid-reel.mp4" poster="hamid-poster.jpg" controls playsinline preload="none"></video>
+        <div class="cap"><b>Video</b> · Adin zu Gast bei Hamid</div>
       </div>
-      <div class="arts">
-        <a class="card rv chan" href="https://www.youtube.com/@hamidmossadegh" target="_blank" rel="noopener">
-          <img src="hamid-avatar.png" alt="Hamid Mossadegh" width="84" height="84">
-          <div class="cinfo">
-            <span class="ckick">Zu Gast bei</span>
-            <h3>Hamid Tailormade Cars <svg width="18" height="18" viewBox="0 0 24 24" aria-label="verifiziert"><circle cx="12" cy="12" r="11" fill="#fff"/><path d="M7 12.5l3.2 3L17 9" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></h3>
-            <p>@hamidmossadegh · Geschäftsführer Hamid Mossadegh</p>
-            <div class="cstats"><span><b>451.000</b> Abonnenten</span><span><b>1.380</b> Videos</span></div>
-          </div>
-          <span class="cbtn"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4" fill="#FF3B30"/><path d="M10 9v6l5-3z" fill="#fff"/></svg>Kanal ansehen</span>
+      <div class="grid">
+        <a class="card media rv" href="https://www.youtube.com/@hamidmossadegh" target="_blank" rel="noopener">
+          <img src="hamid-avatar.png" alt="Hamid Mossadegh" loading="lazy">
+          <div><span class="k">Zu Gast bei</span><h3>Hamid Tailormade Cars</h3><p>@hamidmossadegh</p><div class="nums"><b>451.000</b> Abonnenten · <b>1.380</b> Videos</div></div>
+          <span class="btn sm light">Kanal ansehen</span>
         </a>
-        <a class="card rv chan" href="https://www.instagram.com/reel/DGnS4Ouuisq/" target="_blank" rel="noopener">
-          <img src="dmax-avatar.png" alt="DMAX" width="84" height="84">
-          <div class="cinfo">
-            <span class="ckick">Gesehen bei</span>
-            <h3>DMAX <svg width="18" height="18" viewBox="0 0 24 24" aria-label="verifiziert"><path d="M12 1.5l2.6 1.9 3.2-.1 1 3 2.6 1.9-1 3 1 3-2.6 1.9-1 3-3.2-.1L12 22.5l-2.6-1.9-3.2.1-1-3-2.6-1.9 1-3-1-3 2.6-1.9 1-3 3.2.1z" fill="#3897F0"/><path d="M7.8 12.3l2.8 2.7 5.6-5.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></h3>
-            <p>@dmax_tv · Blaulicht, Survival, Schrauben, Abenteuer</p>
-            <div class="cstats"><span><b>179.000</b> Follower</span><span><b>4.109</b> Beiträge</span></div>
-          </div>
-          <span class="cbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C13584" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg>Reel ansehen</span>
+        <a class="card media rv" href="https://www.instagram.com/reel/DGnS4Ouuisq/" target="_blank" rel="noopener">
+          <img src="dmax-avatar.png" alt="DMAX" loading="lazy">
+          <div><span class="k">Gesehen bei</span><h3>DMAX</h3><p>@dmax_tv</p><div class="nums"><b>179.000</b> Follower · <b>4.109</b> Beiträge</div></div>
+          <span class="btn sm light">Reel ansehen</span>
         </a>
-        
-        <div class="card rv art" aria-label="Bericht im GEWINNER Magazin">
-          <span class="ckick" style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--o1)">Erschienen im · Ratgeber</span>
-          <span class="pub">GEWINNER Magazin</span>
+        <div class="card rv">
+          <span class="kick" style="font-size:11px">Erschienen im · Ratgeber</span>
+          <div class="pub">GEWINNER Magazin</div>
           <h3>Luxus Sportwagen selber fahren – so wird die Faszination zur Wirklichkeit</h3>
-          <p>Ratgeber darüber, wie man einen Luxus-Sportwagen selbst fahren kann, statt nur davon zu träumen.</p>
-          <!-- Link zum Bericht: hier <a class="more" href="URL">Bericht lesen</a> einsetzen -->
         </div>
       </div>
     </div>
   </div>
 </section>
 
-
 <section class="sec" id="netzwerk">
-  <div class="wrap">
-    <div class="shead">
-      <span class="kicker">Unser Netzwerk</span>
-      <h2>Ein Netzwerk aus <span class="o">echten Vermietungen</span></h2>
-      <p>Über 148 Gründer haben wir beim Start begleitet. Hier sind einige der Vermietungen, mit denen wir zusammenarbeiten.</p>
-    </div>
-  </div>
-  <div class="marq" aria-label="Partner-Vermietungen">
-    <div class="mtrack"><div class="pt"><img loading="lazy" decoding="async" src="partners/schnelle.png" alt="Fast Cars Rental Logo"><b>Fast Cars Rental</b><span>Bern</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/sportcars.png" alt="Sportcars Luzern Logo"><b>Sportcars Luzern</b><span>Luzern</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/samer.png" alt="Samer Car-Enterprise Logo"><b>Samer Car-Enterprise</b><span>St. Gallen</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/vicecity.png" alt="Vice City Rentals Logo"><b>Vice City Rentals</b><span>Zug</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/primo.png" alt="Primo Automotive Logo"><b>Primo Automotive</b><span>Schweiz</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/speeddrive.png" alt="SpeedDrive Rental Logo"><b>SpeedDrive Rental</b><span>Zürich</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/rentfurious.png" alt="Rent & Furious Logo"><b>Rent &amp; Furious</b><span>Basel</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/gl.png" alt="G&L Exclusive Rental Logo"><b>G&amp;L Exclusive Rental</b><span>Zürich</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/eleganz.png" alt="Elegance Rent Logo"><b>Elegance Rent</b><span>Schweiz</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/cardrenalin.png" alt="CARdrenalin Rent Logo"><b>CARdrenalin Rent</b><span>Zürich</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/tharcars.png" alt="TharCars Logo"><b>TharCars</b><span>Bern</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/royal.png" alt="Royal Carrent Logo"><b>Royal Carrent</b><span>Aargau</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/astron.png" alt="Astron Cars Logo"><b>Astron Cars</b><span>Zürich</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/edel.png" alt="Edel Rent Zug Logo"><b>Edel Rent Zug</b><span>Zug</span></div><div class="pt"><img loading="lazy" decoding="async" src="partners/swiss.png" alt="Swiss Car Rent Logo"><b>Swiss Car Rent</b><span>Basel</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/schnelle.png" alt="Fast Cars Rental Logo"><b>Fast Cars Rental</b><span>Bern</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/sportcars.png" alt="Sportcars Luzern Logo"><b>Sportcars Luzern</b><span>Luzern</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/samer.png" alt="Samer Car-Enterprise Logo"><b>Samer Car-Enterprise</b><span>St. Gallen</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/vicecity.png" alt="Vice City Rentals Logo"><b>Vice City Rentals</b><span>Zug</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/primo.png" alt="Primo Automotive Logo"><b>Primo Automotive</b><span>Schweiz</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/speeddrive.png" alt="SpeedDrive Rental Logo"><b>SpeedDrive Rental</b><span>Zürich</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/rentfurious.png" alt="Rent & Furious Logo"><b>Rent &amp; Furious</b><span>Basel</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/gl.png" alt="G&L Exclusive Rental Logo"><b>G&amp;L Exclusive Rental</b><span>Zürich</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/eleganz.png" alt="Elegance Rent Logo"><b>Elegance Rent</b><span>Schweiz</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/cardrenalin.png" alt="CARdrenalin Rent Logo"><b>CARdrenalin Rent</b><span>Zürich</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/tharcars.png" alt="TharCars Logo"><b>TharCars</b><span>Bern</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/royal.png" alt="Royal Carrent Logo"><b>Royal Carrent</b><span>Aargau</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/astron.png" alt="Astron Cars Logo"><b>Astron Cars</b><span>Zürich</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/edel.png" alt="Edel Rent Zug Logo"><b>Edel Rent Zug</b><span>Zug</span></div><div class="pt" aria-hidden="true"><img loading="lazy" decoding="async" src="partners/swiss.png" alt="Swiss Car Rent Logo"><b>Swiss Car Rent</b><span>Basel</span></div></div>
-  </div>
+  <div class="wrap"><div class="head"><span class="kick">Unser Netzwerk</span><h2>Ein Netzwerk aus <span class="grad">echten Vermietungen</span></h2><p>Über 148 Gründer haben wir beim Start begleitet. Hier sind einige der Vermietungen, mit denen wir zusammenarbeiten.</p></div></div>
+  <div class="marq"><div class="track" id="track"></div></div>
 </section>
 
 <section class="sec" id="vorteile">
   <div class="wrap">
-    <div class="shead">
-      <span class="kicker">Der Unterschied</span>
-      <h2>Kein Marketing-Kurs. <span class="o">Das ganze Geschäft.</span></h2>
-      <p>Die meisten Vermietungen scheitern an Kalkulation, Verträgen und fehlenden Anfragen. Genau dort setzt Learn 2 Rent an.</p>
-    </div>
-    <div class="bento">
-      <article class="card rv">
-        <h3>Die richtige Flotte</h3>
-        <p>Welche Fahrzeuge sich rechnen – und welche zur Kostenfalle werden.</p>
-        <div class="mock" aria-hidden="true">
-          <div class="mrow hl">Fahrzeug A<span class="bar"><i style="width:80%"></i></span></div>
-          <div class="mrow">Fahrzeug B<span class="bar"><i style="width:52%"></i></span></div>
-          <div class="mrow">Fahrzeug C<span class="bar"><i style="width:22%"></i></span></div>
-          <span style="font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.08em;text-align:center">BEISPIEL · AUSLASTUNG</span>
-        </div>
-      </article>
-      <article class="card rv">
-        <h3>Verträge, die halten</h3>
-        <p>Mietvertrag, Kaution und Übergabeprotokoll für den Ernstfall.</p>
-        <div class="mock" aria-hidden="true">
-          <div class="mrow"><span class="tg">✓</span>Ausweis &amp; Führerschein geprüft</div>
-          <div class="mrow hl"><span class="tg">✓</span>Kaution hinterlegt</div>
-          <div class="mrow"><span class="tg">✓</span>Fotos aller Seiten</div>
-        </div>
-      </article>
-      <article class="card tall rv">
-        <div class="cone" aria-hidden="true"><svg class="lg"><use href="#logo"/></svg></div>
-        <div class="cone-t"><h3>Aus der Praxis</h3><p>Kein Theoriekurs: Alles stammt aus dem laufenden Betrieb von Edition Rent.</p></div>
-      </article>
-      <article class="card rv">
-        <h3>Planbare Anfragen</h3>
-        <p>Kanäle, die du selbst steuerst.</p>
-        <div class="mock" aria-hidden="true">
-          <div class="mrow"><span class="tg">Website</span>Wochenendmiete</div>
-          <div class="mrow hl"><span class="tg">Instagram</span>Hochzeit</div>
-          <div class="mrow"><span class="tg">Partner</span>Hotelgast</div>
-        </div>
-      </article>
-      <article class="card rv">
-        <h3>Mit Werkzeugen, die du kennst</h3>
-        <p>Keine teure Software nötig.</p>
-        <div class="tools" aria-hidden="true">
-          <span><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9297A3" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12 H21 M12 3 C15 6 15 18 12 21 C9 18 9 6 12 3"/></svg></i>Website</span>
-          <span><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9297A3" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/></svg></i>Instagram</span>
-          <span><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9297A3" stroke-width="1.6"><path d="M4 20 L5.5 15.5 A8 8 0 1 1 8.5 18.5 Z"/></svg></i>WhatsApp</span>
-          <span><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9297A3" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8 H16 M8 12 H16 M8 16 H12"/></svg></i>Verträge</span>
-          <span><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9297A3" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10 H21 M9 10 V20 M15 10 V20"/></svg></i>Kalkulation</span>
-        </div>
-      </article>
+    <div class="head"><span class="kick">Der Unterschied</span><h2>Kein Marketing-Kurs. <span class="grad">Das ganze Geschäft.</span></h2><p>Die meisten Vermietungen scheitern an Kalkulation, Verträgen und fehlenden Anfragen. Genau dort setzt Learn 2 Rent an.</p></div>
+    <div class="grid feat">
+      <article class="card rv"><h3>Die richtige Flotte</h3><p>Welche Fahrzeuge sich rechnen – und welche zur Kostenfalle werden.</p>
+        <div class="mock"><div class="row on">Fahrzeug A<span class="bar"><i style="width:80%"></i></span></div><div class="row">Fahrzeug B<span class="bar"><i style="width:52%"></i></span></div><div class="row">Fahrzeug C<span class="bar"><i style="width:22%"></i></span></div></div></article>
+      <article class="card rv"><h3>Verträge, die halten</h3><p>Mietvertrag, Kaution und Übergabeprotokoll für den Ernstfall.</p>
+        <div class="mock"><div class="row">✓ Ausweis &amp; Führerschein geprüft</div><div class="row on">✓ Kaution hinterlegt</div><div class="row">✓ Fotos aller Seiten</div></div></article>
+      <article class="card praxis rv"><span class="two">2</span><h3>Aus der Praxis</h3><p>Kein Theoriekurs: Alles stammt aus dem laufenden Betrieb von Edition Rent.</p></article>
+      <article class="card rv"><h3>Planbare Anfragen</h3><p>Kanäle, die du selbst steuerst.</p>
+        <div class="mock"><div class="row"><span class="t">Website</span>Wochenendmiete</div><div class="row on"><span class="t">Instagram</span>Hochzeit</div><div class="row"><span class="t">Partner</span>Hotelgast</div></div></article>
+      <article class="card rv"><h3>Mit Werkzeugen, die du kennst</h3><p>Keine teure Software nötig.</p>
+        <div class="chips"><span>Website</span><span>Instagram</span><span>WhatsApp</span><span>Verträge</span><span>Kalkulation</span></div></article>
     </div>
   </div>
 </section>
 
 <section class="sec" id="weg">
   <div class="wrap">
-    <div class="shead">
-      <span class="kicker">So funktioniert's</span>
-      <h2>Von der Idee zur <span class="o">ersten Vermietung</span></h2>
-      <p>Egal wo du startest: Gründung, Fahrzeuge, Recht, Marketing und Partner – alles aus einer Hand.</p>
-    </div>
-    <div class="flow rv" id="flow">
-      <svg class="wires" id="wires" aria-hidden="true"></svg>
-      <div class="inputs">
-        <div class="node" data-a="in"><span class="fic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9297A3" stroke-width="1.8"><path d="M12 3 a6 6 0 0 1 4 10.5 V17 H8 V13.5 A6 6 0 0 1 12 3 Z M9 21 H15"/></svg></span><div><b>Deine Idee</b><small>Noch keine Fahrzeuge</small></div></div>
-        <div class="node" data-a="in"><span class="fic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9297A3" stroke-width="1.8"><path d="M3 15 L5 9 H19 L21 15 V19 H3 Z"/></svg></span><div><b>Erste Fahrzeuge</b><small>Vermietung ohne System</small></div></div>
+    <div class="head"><span class="kick">So funktioniert's</span><h2>Von der Idee zur <span class="grad">ersten Vermietung</span></h2><p>Egal wo du startest: Gründung, Fahrzeuge, Recht, Marketing und Partner – alles aus einer Hand.</p></div>
+    <div class="flow" id="flow">
+      <svg id="wires" aria-hidden="true"></svg>
+      <div class="side">
+        <div class="node" data-a="in"><b>Deine Idee</b><small>Noch keine Fahrzeuge</small></div>
+        <div class="node" data-a="in"><b>Erste Fahrzeuge</b><small>Vermietung ohne System</small></div>
       </div>
-      <div class="node core" id="core">
-        <div class="cb"><i></i><i></i><i></i><span style="margin-left:6px">Learn 2 Rent · Alles aus einer Hand</span></div>
-        <div class="body" id="coreMods">
-          <div class="mod"><em>01</em>Gründung</div><div class="mod"><em>02</em>Branding</div>
-          <div class="mod"><em>03</em>Videokurs</div><div class="mod"><em>04</em>Fahrzeuge</div>
-          <div class="mod"><em>05</em>Marketing</div><div class="mod"><em>06</em>Partner</div>
-          <div class="mod"><em>07</em>Recht</div><div class="mod"><em>08</em>Zertifikat</div>
-        </div>
+      <div class="core" id="core">
+        <div class="bar"><i></i>Learn 2 Rent · Alles aus einer Hand</div>
+        <div class="mods"><div class="mod"><em>01</em>Gründung</div><div class="mod"><em>02</em>Branding</div><div class="mod"><em>03</em>Videokurs</div><div class="mod"><em>04</em>Fahrzeuge</div><div class="mod"><em>05</em>Marketing</div><div class="mod"><em>06</em>Partner</div><div class="mod"><em>07</em>Recht</div><div class="mod on"><em>08</em>Zertifikat</div></div>
       </div>
-      <div class="outs">
-        <div class="node final" data-a="out"><b>Deine Vermietung</b><ul class="checkl"><li>Flotte kalkuliert</li><li>Verträge abgesichert</li><li>Anfragen planbar</li></ul></div>
+      <div class="side">
+        <div class="node" data-a="out"><b>Deine Vermietung</b><ul class="checkl"><li>Flotte kalkuliert</li><li>Verträge abgesichert</li><li>Anfragen planbar</li></ul></div>
         <div class="node" data-a="out"><b>Dein Ablauf</b><small>Übergabe &amp; Rückgabe nach Plan</small></div>
-      </div>
-    </div>
-
-    <div class="split">
-      <div class="rv">
-        <span class="kicker">Praxis statt Theorie</span>
-        <h3 style="margin-top:12px">Lerne aus einem Betrieb, der jeden Tag läuft</h3>
-        <p>Jede Vorlage, jede Kalkulation und jeder Ablauf im Programm kommt aus dem Alltag von Edition Rent – mit echten Fahrzeugen, Kunden und Übergaben.</p>
-        <ul class="ck"><li>Vorlagen für Mietvertrag, Kaution und Übergabe</li><li>Kalkulation pro Fahrzeug statt Bauchgefühl</li><li>Abläufe, die auch im Streitfall halten</li></ul>
-      </div>
-      <div class="card ringcard rv" aria-hidden="true">
-        <div class="ring" id="ring"></div>
-        <div class="sess">
-          <div class="s"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M6 3 H14 L18 7 V21 H6 Z"/><path d="M9 11 H15 M9 15 H15"/></svg></span><div><b>Vertrags-Vorlagen</b><small>Mietvertrag, AGB, Protokoll</small></div></div>
-          <div class="s"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10 H21 M9 10 V20"/></svg></span><div><b>Kalkulations-Sheet</b><small>Preis pro Tag &amp; Fahrzeug</small></div></div>
-          <div class="s dim"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M4 5 H20 V16 H10 L5 20 V16 H4 Z"/></svg></span><div><b>Anfragen-Ablauf</b><small>Von der DM bis zur Übergabe</small></div></div>
-        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="sec" id="programm">
+<section class="sec" id="leistungen">
   <div class="wrap">
-    <div class="shead">
-      <span class="kicker">Leistungen</span>
-      <h2>Alles, was du <span class="o">zum Start brauchst</span></h2>
-      <p>Tippe ein Stichwort ein, zum Beispiel „Mietvertrag“, „GPS“ oder „Instagram“.</p>
-    </div>
-    <div class="finder rv">
-      <label class="fsearch" for="q">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9297A3" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20 L16 16"/></svg>
-        <input id="q" type="search" placeholder="Wonach suchst du? z. B. Instagram" autocomplete="off">
-        <span class="go" aria-hidden="true"><svg width="12" height="12"><use href="#bolt"/></svg></span>
-      </label>
-      <div class="flist">
-        <div class="flabel"><span>Bereiche</span><span id="fcount">8 Bereiche</span></div>
-        <div id="frows"></div>
-      </div>
-    </div>
-    <p class="below">Kein reiner Kurs, sondern ein Komplettpaket – von der Firmengründung bis zur Zertifizierung.</p>
+    <div class="head"><span class="kick">Leistungen</span><h2>Alles, was du <span class="grad">zum Start brauchst</span></h2><p>Kein reiner Kurs, sondern ein Komplettpaket – von der Firmengründung bis zur Zertifizierung.</p></div>
+    <div class="svcs" id="svcs"></div>
+    <p class="note">Inklusive Videokurs mit 25 Modulen und 24/7 Support in der Startphase.</p>
   </div>
 </section>
 
 <section class="sec" id="mentor">
   <div class="wrap">
-    <div class="shead">
-      <span class="kicker">Dein Mentor</span>
-      <h2>Kein Theoretiker. <span class="o">Ein Vermieter mit 65+ Autos.</span></h2>
-    </div>
+    <div class="head"><span class="kick">Dein Mentor</span><h2>Kein Theoretiker. <span class="grad">Ein Vermieter mit 65+ Autos.</span></h2></div>
     <div class="mentor">
-      <div class="card portrait rv">
-        <div class="img" role="img" aria-label="Porträt Adin Kilim"></div>
-        <div class="shade"></div>
-        <div class="who"><div><b>Adin Kilim</b><span>Inhaber Edition Rent</span></div><span>@adin.elite</span></div>
-      </div>
-      <div>
-        <div class="card bio rv">
-          <span class="kicker">Edition Rent · Basel</span>
-          <h3>Mit zwei Autos gestartet. <span class="o">Heute 65+ Fahrzeuge.</span></h3>
-          <p>Jahrgang 1999, kaufmännische Lehre, eigene Onlineshops, Pizzalieferant und Außendienst – dann der Einstieg in die Luxusvermietung mit geliehenem Kapital und zwei geleasten Fahrzeugen. Heute ist Edition Rent Basel mit über 65 Fahrzeugen der erfolgreichste Luxusautovermieter der Schweiz – und Adin hat mit seinem Team über 148 Gründer beim Start ihrer eigenen Vermietung begleitet.</p>
-          <div class="svc"><div>Fahrzeugvermietung</div><div>Lieferung Haus, Hotel, Flughafen</div><div>Chauffeur-Service</div><div>Car-Sharing</div></div>
-          <div class="quote"><p>„Das Leben ist viel zu kurz, um kleine Autos zu fahren.“</p><span>Adin Kilim</span></div>
-        </div>
+      <div class="portrait rv" role="img" aria-label="Porträt Adin Kilim"><div class="who"><div><b>Adin Kilim</b>Inhaber Edition Rent</div><span>@adin.elite</span></div></div>
+      <div class="card bio rv">
+        <span class="kick">Edition Rent · Basel</span>
+        <h3>Mit zwei Autos gestartet. <span class="grad">Heute 65+ Fahrzeuge.</span></h3>
+        <p>Jahrgang 1999, kaufmännische Lehre, eigene Onlineshops, Pizzalieferant und Außendienst – dann der Einstieg in die Luxusvermietung mit geliehenem Kapital und zwei geleasten Fahrzeugen. Heute ist Edition Rent Basel mit über 65 Fahrzeugen der erfolgreichste Luxusautovermieter der Schweiz – und Adin hat mit seinem Team über 148 Gründer beim Start ihrer eigenen Vermietung begleitet.</p>
+        <div class="tags"><span>Fahrzeugvermietung</span><span>Lieferung Haus, Hotel, Flughafen</span><span>Chauffeur-Service</span><span>Car-Sharing</span></div>
+        <div class="quote"><p>„Das Leben ist viel zu kurz, um kleine Autos zu fahren.“</p><span>Adin Kilim</span></div>
       </div>
     </div>
   </div>
@@ -1105,10 +438,7 @@ a,button,input,select,label{touch-action:manipulation}
 
 <section class="sec" id="ablauf">
   <div class="wrap">
-    <div class="shead">
-      <span class="kicker">Ablauf</span>
-      <h2>In vier Schritten <span class="o">zum eigenen Betrieb</span></h2>
-    </div>
+    <div class="head"><span class="kick">Ablauf</span><h2>In vier Schritten <span class="grad">zum eigenen Betrieb</span></h2></div>
     <ol class="steps">
       <li class="card rv"><span class="n">01</span><h3>Bewerbung</h3><p>Kurzes Formular, etwa zwei Minuten.</p></li>
       <li class="card rv"><span class="n">02</span><h3>Erstgespräch</h3><p>Stand, Ziele und Budget – ehrlich, auch wenn die Antwort Nein ist.</p></li>
@@ -1116,88 +446,47 @@ a,button,input,select,label{touch-action:manipulation}
       <li class="card rv"><span class="n">04</span><h3>Umsetzung</h3><p>Firmengründung, Fahrzeuge, Marketing und Partner – Schritt für Schritt bis zur ersten Vermietung.</p></li>
     </ol>
     <div class="fit">
-      <div class="card rv" style="border-color:rgba(146,151,163,.35)"><h3>Passt zu dir, wenn du …</h3><ul class="ck"><li>eine eigene Autovermietung starten willst und es ernst meinst</li><li>schon wenige Fahrzeuge vermietest und Struktur brauchst</li><li>bereit bist, Kapital und Zeit zu investieren</li><li>lieber von jemandem mit Praxis lernst</li></ul></div>
-      <div class="card rv"><h3>Passt nicht, wenn du …</h3><ul class="ck no"><li>schnelles Geld ohne Arbeit suchst</li><li>kein Startkapital und keinen Plan dafür hast</li><li>nur einen Sportwagen für dich finanzieren willst</li><li>Verträge und Versicherung für Nebensache hältst</li></ul></div>
+      <div class="card rv"><h3>Passt zu dir, wenn du …</h3><ul class="ck"><li>eine eigene Autovermietung starten willst und es ernst meinst</li><li>schon wenige Fahrzeuge vermietest und Struktur brauchst</li><li>bereit bist, Kapital und Zeit zu investieren</li><li>lieber von jemandem mit Praxis lernst</li></ul></div>
+      <div class="card rv"><h3>Passt nicht, wenn du …</h3><ul class="xl"><li>schnelles Geld ohne Arbeit suchst</li><li>kein Startkapital und keinen Plan dafür hast</li><li>nur einen Sportwagen für dich finanzieren willst</li><li>Verträge und Versicherung für Nebensache hältst</li></ul></div>
     </div>
-    <p class="below">Inklusive Videokurs mit 25 Modulen und 24/7 Support in der Startphase.</p>
   </div>
 </section>
 
-<section class="sec" id="angebot">
+<section class="sec" id="vergleich">
   <div class="wrap">
-    <div class="shead">
-      <span class="kicker">Vergleich</span>
-      <h2>Allein ausprobieren oder <span class="o">mit System starten</span></h2>
-      <p>Die meisten Fehler bei einer neuen Vermietung kosten Geld, bevor das erste Auto vermietet ist. Hier siehst du, was sich ändert.</p>
+    <div class="head"><span class="kick">Vergleich</span><h2>Allein ausprobieren oder <span class="grad">mit System starten</span></h2><p>Die meisten Fehler bei einer neuen Vermietung kosten Geld, bevor das erste Auto vermietet ist.</p></div>
+    <div class="vs">
+      <div class="card solo rv"><span class="label">Allein starten</span><span class="big">Nach Gefühl</span>
+        <ul class="xl"><li>Fahrzeuge kaufen, bevor die Zahlen stehen</li><li>Mietverträge aus dem Internet zusammenkopieren</li><li>Preise schätzen und hoffen, dass es reicht</li><li>Bei Schäden und Kautionsstreit improvisieren</li><li>Anfragen dem Zufall überlassen</li></ul></div>
+      <div class="card hot rv"><span class="label">Mit Learn 2 Rent</span><span class="big">Mit System</span>
+        <ul class="ck"><li>Kalkulation pro Fahrzeug, bevor du kaufst</li><li>Vorlagen für Mietvertrag, Kaution und Übergabe</li><li>Tages- und Paketpreise, die sich rechnen</li><li>Klarer Ablauf bei Schäden und Streitfällen</li><li>Kanäle für planbare Anfragen</li><li>Praxiswissen aus Edition Rent mit 65+ Fahrzeugen</li></ul></div>
     </div>
-    <div class="plans vs">
-      <div class="card plan rv solo">
-        <span class="nm">Allein starten</span>
-        <span class="pr">Nach Gefühl</span>
-        <ul class="xl">
-          <li>Fahrzeuge kaufen, bevor die Zahlen stehen</li>
-          <li>Mietverträge aus dem Internet zusammenkopieren</li>
-          <li>Preise schätzen und hoffen, dass es reicht</li>
-          <li>Bei Schäden und Kautionsstreit improvisieren</li>
-          <li>Anfragen dem Zufall überlassen</li>
-        </ul>
-      </div>
-      <div class="card plan hot rv">
-        <span class="nm">Mit Learn 2 Rent</span>
-        <span class="pr">Mit System</span>
-        <ul class="ck">
-          <li>Kalkulation pro Fahrzeug, bevor du kaufst</li>
-          <li>Vorlagen für Mietvertrag, Kaution und Übergabe</li>
-          <li>Tages- und Paketpreise, die sich rechnen</li>
-          <li>Klarer Ablauf bei Schäden und Streitfällen</li>
-          <li>Kanäle für planbare Anfragen</li>
-          <li>Praxiswissen aus Edition Rent mit 65+ Fahrzeugen</li>
-        </ul>
-      </div>
-    </div>
-    <div class="vs-cta rv">
-      <a href="#bewerbung" class="btn">Kostenloses Erstgespräch anfragen <span class="ar" aria-hidden="true">→</span></a>
-      <span>100 % kostenlos · unverbindlich · kein Verkaufsdruck</span>
-    </div>
+    <div class="cta"><a href="#erstgespraech" class="btn js-open">Kostenloses Erstgespräch anfragen →</a><small>100 % kostenlos · unverbindlich · kein Verkaufsdruck</small></div>
   </div>
 </section>
 
 <section class="sec" id="faq">
   <div class="wrap">
-    <div class="shead">
-      <span class="kicker">FAQ</span>
-      <h2>Deine Fragen, <span class="o">ehrlich beantwortet</span></h2>
-    </div>
-    <div class="ftabs" role="tablist" aria-label="Fragen-Kategorien" id="ftabs"></div>
-    <div class="faqgrid">
-      <div class="qlist" role="tablist" aria-label="Fragen" id="qlist"></div>
-      <div class="card qans" role="tabpanel" aria-live="polite">
-        <p id="qtext"></p>
-        <div class="qnav"><button type="button" id="qprev" aria-label="Vorherige Frage">←</button><button type="button" id="qnext" aria-label="Nächste Frage">→</button></div>
-      </div>
+    <div class="head"><span class="kick">FAQ</span><h2>Deine Fragen, <span class="grad">ehrlich beantwortet</span></h2></div>
+    <div class="faq">
+      <details><summary>Brauche ich Erfahrung in der Autobranche?</summary><p>Nein. Du brauchst aber die Bereitschaft, ein echtes Unternehmen aufzubauen. Wir begleiten dich von der Firmengründung an.</p></details>
+      <details><summary>Gehört das Unternehmen mir?</summary><p>Ja. Du baust dein eigenes Unternehmen unter deiner eigenen Marke auf. Es ist kein Franchise.</p></details>
+      <details><summary>Brauche ich eine GmbH?</summary><p>Nein. Du kannst auch als Einzelunternehmer oder in einer anderen Rechtsform starten.</p></details>
+      <details><summary>Brauche ich zum Starten eine Garage?</summary><p>Nein. Die Fahrzeuge können auch auf angemieteten Stellplätzen stehen.</p></details>
+      <details><summary>Muss ich Autos kaufen oder leasen?</summary><p>Nicht zwingend. Über unser Partnernetzwerk bekommst du Zugang zu Fahrzeugen aller Preisklassen und zu Hunderten Fahrzeugbesitzern.</p></details>
+      <details><summary>Was ist alles enthalten?</summary><p>Firmengründung und Dokumente, Logo und Branding, Videokurs mit 25 Modulen, Fahrzeugbeschaffung, Social Media und Marketing, Partner für GPS, Buchhaltung und Abholung, rechtliche Unterlagen und das Zertifikat als Sportwagenvermieter.</p></details>
+      <details><summary>Garantiert ihr Erfolg oder Umsatz?</summary><p>Nein. Das kann niemand seriös garantieren. Du bekommst Wissen, Struktur und Praxiserfahrung. Was du daraus machst, liegt bei dir.</p></details>
+      <details><summary>Wie viel Startkapital brauche ich?</summary><p>Das hängt von Markt, Fahrzeugklasse und Geschäftsmodell ab. Deine Situation prüfen wir im kostenlosen Erstgespräch.</p></details>
+      <details><summary>Was kostet Learn 2 Rent?</summary><p>Es gibt verschiedene Pakete, je nachdem, wie viel Unterstützung du brauchst. Welches passt, besprechen wir im kostenlosen Erstgespräch.</p></details>
     </div>
   </div>
 </section>
 
 <section class="wrap final">
   <div class="card finalbox rv">
-    <div>
-      <h2>Deine Vermietung beginnt <span class="o">mit einem Gespräch</span></h2>
-      <p>Lerne aus einem laufenden Betrieb – Flotte, Verträge, Preise und Kunden. Ohne Rätselraten. Ergebnisse nicht garantiert.</p>
-      <div class="row">
-        <a href="#bewerbung" class="btn">Erstgespräch anfragen <span class="ar" aria-hidden="true">→</span></a>
-        <a href="#programm" class="ghost">Leistungen ansehen</a>
-      </div>
-    </div>
-    <div class="mini" aria-hidden="true">
-      <div class="cb"><i></i><i></i><i></i><span style="margin-left:6px">Dein Fahrplan</span></div>
-      <div class="g">
-        <div class="mrow hl">01 Gründung</div><div class="mrow">02 Branding</div>
-        <div class="mrow">03 Videokurs</div><div class="mrow">04 Fahrzeuge</div>
-        <div class="mrow">05 Marketing</div><div class="mrow">06 Recht</div>
-      </div>
-    </div>
-    <span class="bottomglow" aria-hidden="true"></span>
+    <h2>Deine Vermietung beginnt <span class="grad">mit einem Gespräch</span></h2>
+    <p>Lerne aus einem laufenden Betrieb – Flotte, Verträge, Preise und Kunden. Ohne Rätselraten. Ergebnisse nicht garantiert.</p>
+    <div class="btns"><a href="#erstgespraech" class="btn js-open">Erstgespräch anfragen →</a><a href="#leistungen" class="btn ghost">Leistungen ansehen</a></div>
   </div>
 </section>
 </main>
@@ -1205,11 +494,8 @@ a,button,input,select,label{touch-action:manipulation}
 <footer>
   <div class="wrap">
     <div class="fgrid">
-      <div>
-        <a href="#top" class="mark" aria-label="Learn 2 Rent"><img class="logo-img lg" src="logo-white.png" alt="Learn 2 Rent"></a>
-        <p class="fbig">Baue deine Autovermietung auf – mit System statt Zufall.</p>
-      </div>
-      <div><h4>Programm</h4><ul><li><a href="#programm">Leistungen</a></li><li><a href="#ablauf">Ablauf</a></li><li><a href="#angebot">Vergleich</a></li></ul></div>
+      <div class="brand"><img class="logo" src="logo-white.png" alt="Learn 2 Rent" style="height:56px" loading="lazy"><p>Baue deine Autovermietung auf – mit System statt Zufall.</p></div>
+      <div><h4>Programm</h4><ul><li><a href="#leistungen">Leistungen</a></li><li><a href="#ablauf">Ablauf</a></li><li><a href="#vergleich">Vergleich</a></li></ul></div>
       <div><h4>Über uns</h4><ul><li><a href="#mentor">Adin Kilim</a></li><li><a href="#mentor">Edition Rent</a></li><li><a href="#faq">FAQ</a></li></ul></div>
       <div><h4>Rechtliches</h4><ul><li><a href="#faq">Impressum</a></li><li><a href="#faq">Datenschutz</a></li><li><a href="#faq">Teilnahmebedingungen</a></li></ul></div>
     </div>
@@ -1217,361 +503,188 @@ a,button,input,select,label{touch-action:manipulation}
   </div>
 </footer>
 
+<!-- Formular: Erstgespräch (3 Schritte) -->
 <div class="modal" id="modal" aria-hidden="true">
   <div class="scrim" data-close></div>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="m-title">
-    <div class="sheet-head">
-      <div><svg width="34" height="34" aria-hidden="true"><use href="#logo"/></svg><h2 id="m-title">Erstgespräch anfragen</h2><p>Kostenlos und unverbindlich. Dauert etwa zwei Minuten.</p></div>
-      <button type="button" class="x" data-close aria-label="Schließen">×</button>
-    </div>
-    <div class="prog" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
-    <div class="stepmeta" id="stepmeta">SCHRITT 1 VON 3 · DEIN STAND</div>
+    <button type="button" class="x" data-close aria-label="Schließen">×</button>
+    <div class="mhead"><h2 id="m-title">Erstgespräch anfragen</h2><p>Kostenlos und unverbindlich. Dauert etwa zwei Minuten.</p></div>
+    <div class="prog" id="prog"><i class="on"></i><i></i><i></i></div>
+    <div class="meta" id="meta">SCHRITT 1 VON 3 · DEIN STAND</div>
     <form id="mform" novalidate>
       <div class="pane on">
-        <div class="opt"><span>Wo stehst du gerade?</span>
+        <div class="f">Wo stehst du gerade?
           <div class="radios">
-            <label><input type="radio" name="stand" value="idee" checked> Idee, noch keine Fahrzeuge</label>
-            <label><input type="radio" name="stand" value="erste"> Ich vermiete bereits erste Fahrzeuge</label>
-            <label><input type="radio" name="stand" value="wachsen"> Bestehende Vermietung, will wachsen</label>
+            <label><input type="radio" name="stand" checked> Idee, noch keine Fahrzeuge</label>
+            <label><input type="radio" name="stand"> Ich vermiete bereits erste Fahrzeuge</label>
+            <label><input type="radio" name="stand"> Bestehende Vermietung, will wachsen</label>
           </div>
         </div>
-        <label class="f" for="m-kap">Verfügbares Startkapital<select id="m-kap"><option>Unter 25.000 €</option><option>25.000 – 75.000 €</option><option>75.000 – 200.000 €</option><option>Über 200.000 €</option></select></label>
+        <label class="f">Verfügbares Startkapital<select id="m-kap"><option>Unter 25.000 €</option><option>25.000 – 75.000 €</option><option>75.000 – 200.000 €</option><option>Über 200.000 €</option></select></label>
       </div>
       <div class="pane">
-        <div class="row2">
-          <label class="f" for="m-vor">Vorname*<input id="m-vor" type="text" autocomplete="given-name"></label>
-          <label class="f" for="m-nach">Nachname*<input id="m-nach" type="text" autocomplete="family-name"></label>
+        <div class="two-col">
+          <label class="f">Vorname*<input id="m-vor" type="text" autocomplete="given-name"></label>
+          <label class="f">Nachname*<input id="m-nach" type="text" autocomplete="family-name"></label>
         </div>
-        <label class="f" for="m-tel">Telefonnummer / WhatsApp*<input id="m-tel" type="tel" autocomplete="tel" placeholder="+49 …"></label>
-        <label class="f" for="m-mail">E-Mail*<input id="m-mail" type="email" autocomplete="email"></label>
-        <label class="f" for="m-ort">Land und Region<input id="m-ort" type="text" autocomplete="address-level1"></label>
+        <label class="f">Telefon / WhatsApp*<input id="m-tel" type="tel" autocomplete="tel" placeholder="+49 …"></label>
+        <label class="f">E-Mail*<input id="m-mail" type="email" autocomplete="email"></label>
+        <label class="f">Land und Region<input id="m-ort" type="text"></label>
       </div>
       <div class="pane">
-        <label class="f" for="m-ziel">Was ist dein Ziel mit der Vermietung?<textarea id="m-ziel" rows="3" placeholder="z. B. mit zwei Fahrzeugen in München starten"></textarea></label>
-        <div class="opt"><span>Wie sollen wir dich erreichen?</span>
-          <div class="radios" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-            <label><input type="radio" name="weg" value="tel" checked> Anruf</label>
-            <label><input type="radio" name="weg" value="wa"> WhatsApp</label>
-            <label><input type="radio" name="weg" value="mail"> E-Mail</label>
-          </div>
+        <label class="f">Was ist dein Ziel mit der Vermietung?<textarea id="m-ziel" rows="3" placeholder="z. B. mit zwei Fahrzeugen in München starten"></textarea></label>
+        <div class="f">Wie sollen wir dich erreichen?
+          <div class="radios three"><label><input type="radio" name="weg" checked> Anruf</label><label><input type="radio" name="weg"> WhatsApp</label><label><input type="radio" name="weg"> E-Mail</label></div>
         </div>
-        <input id="m-hp" type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-        <label class="consent" for="m-ok"><input id="m-ok" type="checkbox"><span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme genutzt werden. <a href="#faq" data-close>Datenschutz</a></span></label>
+        <input id="m-hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+        <label class="consent"><input id="m-ok" type="checkbox"><span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme genutzt werden.</span></label>
       </div>
-      <div class="pane done">
-        <div class="ok"><svg width="26" height="26" viewBox="0 0 28 28" aria-hidden="true"><path d="M7 14.5 L12 19 L21 9" fill="none" stroke="#fff" stroke-width="2.4"/></svg></div>
-        <h3>Danke, deine Anfrage ist vollständig.</h3>
-        <p id="done-text">Wir melden uns persönlich bei dir.</p>
-        <button type="button" class="btn" data-close style="margin-top:6px">Schließen</button>
-      </div>
-      <p class="err" id="merr" role="alert"></p>
-      <div class="sheet-foot" id="mfoot">
-        <button type="button" class="back" id="mback" hidden>← Zurück</button>
-        <span></span>
-        <button type="submit" class="btn" id="mnext">Weiter <span class="ar" aria-hidden="true">→</span></button>
-      </div>
-      <div class="trust-mini" id="mtrust"><span>Kostenlos</span><span>Unverbindlich</span><span>Keine Weitergabe an Dritte</span></div>
+      <div class="pane done"><div class="ok">✓</div><h3>Danke, deine Anfrage ist da.</h3><p id="m-done">Wir melden uns persönlich bei dir.</p><button type="button" class="btn" data-close>Schließen</button></div>
+      <p class="err" id="m-err" role="alert"></p>
+      <div class="foot" id="m-foot"><button type="button" class="back" id="m-back" hidden>← Zurück</button><span></span><button type="submit" class="btn" id="m-next">Weiter →</button></div>
     </form>
   </div>
 </div>
 
-
-<div class="modal qk" id="quick" aria-hidden="true">
-  <div class="scrim" data-qclose></div>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="qk-title">
-    <button type="button" class="x" data-qclose aria-label="Schließen">×</button>
-    <div class="qk-hero">
-      <img class="qk-av" src="adin-face2.jpg" alt="Adin Kilim">
-      <div><span class="qk-badge">100 % kostenlos</span></div>
-      <h2 id="qk-title">Sichere dir dein kostenloses Erstgespräch</h2>
-      <p>Sprich mit dem <b>Team von Adin Kilim</b> – 100&nbsp;% kostenlos und unverbindlich.</p>
-      <div class="qk-facts"><span>Unverbindlich</span><span>Kein Verkaufsdruck</span><span>Persönliche Beratung</span></div>
-    </div>
+<!-- Popup nach 4 Sekunden -->
+<div class="modal" id="quick" aria-hidden="true">
+  <div class="scrim" data-close></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="q-title">
+    <button type="button" class="x" data-close aria-label="Schließen">×</button>
+    <div class="qhead"><img src="adin-face2.jpg" alt="Adin Kilim" width="46" height="46"><div><h2 id="q-title">Sichere dir dein kostenloses Erstgespräch</h2><p>Sprich mit dem <b>Team von Adin Kilim</b> – 100&nbsp;% kostenlos und unverbindlich.</p></div></div>
     <form id="qform" novalidate>
-      <label class="f" for="q-name">Name*<input id="q-name" type="text" autocomplete="name" placeholder="Vor- und Nachname"></label>
-      <label class="f" for="q-tel">Telefonnummer / WhatsApp*<input id="q-tel" type="tel" autocomplete="tel" placeholder="Telefon / WhatsApp"></label>
-      <label class="f" for="q-mail">E-Mail*<input id="q-mail" type="email" autocomplete="email" placeholder="E-Mail"></label>
-      <input id="q-hp" type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-      <label class="consent" for="q-ok"><input id="q-ok" type="checkbox"><span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme genutzt werden.</span></label>
-      <p class="err" id="qerr" role="alert" style="margin:0"></p>
-      <button type="submit" class="btn" id="qbtn">Kostenloses Erstgespräch sichern <span class="ar" aria-hidden="true">→</span></button>
-      <div class="qk-small">Dauert 30 Sekunden · Keine Weitergabe an Dritte</div>
+      <div class="pane on">
+        <label class="f"><input id="q-name" type="text" autocomplete="name" placeholder="Vor- und Nachname" aria-label="Name"></label>
+        <label class="f"><input id="q-tel" type="tel" autocomplete="tel" placeholder="Telefon / WhatsApp" aria-label="Telefon"></label>
+        <label class="f"><input id="q-mail" type="email" autocomplete="email" placeholder="E-Mail" aria-label="E-Mail"></label>
+        <input id="q-hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+        <label class="consent"><input id="q-ok" type="checkbox"><span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme genutzt werden.</span></label>
+        <p class="err" id="q-err" role="alert"></p>
+        <button type="submit" class="btn block" id="q-btn">Kostenloses Erstgespräch sichern →</button>
+        <p class="small">Dauert 30 Sekunden · Keine Weitergabe an Dritte</p>
+      </div>
+      <div class="pane done"><div class="ok">✓</div><h3>Danke, du bist eingetragen.</h3><p id="q-done">Wir melden uns persönlich bei dir.</p><button type="button" class="btn" data-close>Schließen</button></div>
     </form>
-    <div class="qk-done">
-      <div class="ok" style="margin:0 auto"><svg width="26" height="26" viewBox="0 0 28 28" aria-hidden="true"><path d="M7 14.5 L12 19 L21 9" fill="none" stroke="#fff" stroke-width="2.4"/></svg></div>
-      <h3 style="margin-top:14px">Danke, du bist eingetragen.</h3>
-      <p id="qdone">Wir melden uns persönlich bei dir.</p>
-      <button type="button" class="btn" data-qclose>Schließen</button>
-    </div>
   </div>
 </div>
 
-<script>window.WEB3FORMS_KEY=''; /* Web3Forms Access Key hier eintragen – gilt für beide Formulare */</script>
 <script>
+/* Web3Forms Access Key hier eintragen (kostenlos auf web3forms.com) */
+var WEB3FORMS_KEY='';
+
 (function(){
-  var LITE=window.matchMedia('(max-width:820px), (hover:none)').matches;
-  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches||LITE;
-  function esc(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var $=function(id){return document.getElementById(id)};
+  var desktop=window.matchMedia('(min-width:1000px) and (hover:hover)').matches;
 
-  var mods=[
-    ['01','Gründung','Firmengründung & Dokumente',['Firmenregistrierung','Firmenadresse','Zertifizierung','Notarielle Dokumente']],
-    ['02','Branding','Logo & Branding',['Logo','Branding','Eigene Website']],
-    ['03','Videokurs','Schulung & Support',['25 Module','24/7 Support','Fahrzeugbeschaffung','Branchenwissen']],
-    ['04','Fahrzeuge','Fahrzeugbeschaffung',['Plattform','Investoren','Partnernetzwerk','Hunderte Fahrzeugbesitzer']],
-    ['05','Marketing','Social Media & Marketing',['Instagram','TikTok','WhatsApp Business','Conversions']],
-    ['06','Partner','Dienstleistungen',['Buchhaltungstools','GPS-Tracking','Abholpartner','Inkassopartner']],
-    ['07','Recht','Rechtliche Unterstützung',['Mietvertrag','Datenschutzrichtlinie','Anwaltsdokumente']],
-    ['08','Zertifikat','Abschluss',['Zertifizierter Sportwagenvermieter','Kautionsfreie Vermietung']]
-  ];
-  var rows=document.getElementById('frows'),q=document.getElementById('q'),fc=document.getElementById('fcount');
-  function renderFinder(){
-    var t=q.value.trim().toLowerCase(),html='',n=0,topics=0;
-    mods.forEach(function(m){
-      var hitMod=!t||m[1].toLowerCase().indexOf(t)>-1||m[2].toLowerCase().indexOf(t)>-1;
-      var hits=m[3].map(function(x){return t&&x.toLowerCase().indexOf(t)>-1;});
-      if(t&&!hitMod&&!hits.some(Boolean))return;
-      n++;topics+=m[3].length;
-      html+='<div class="frow"><div class="nm"><i>'+m[0]+'</i>'+esc(m[1])+' <em>('+m[3].length+')</em></div><div class="chips">'+m[3].map(function(x,j){return '<span class="chip'+(hits[j]?' hit':'')+'">'+esc(x)+'</span>';}).join('')+'</div></div>';
+  /* Header-Rand beim Scrollen */
+  var nav=$('nav');
+  window.addEventListener('scroll',function(){nav.classList.toggle('scrolled',window.scrollY>10)},{passive:true});
+
+  /* Partner */
+  var P=[['schnelle','Fast Cars Rental','Bern'],['sportcars','Sportcars Luzern','Luzern'],['samer','Samer Car-Enterprise','St. Gallen'],['vicecity','Vice City Rentals','Zug'],['primo','Primo Automotive','Schweiz'],['speeddrive','SpeedDrive Rental','Zürich'],['rentfurious','Rent & Furious','Basel'],['gl','G&L Exclusive Rental','Zürich'],['eleganz','Elegance Rent','Schweiz'],['cardrenalin','CARdrenalin Rent','Zürich'],['tharcars','TharCars','Bern'],['royal','Royal Carrent','Aargau'],['astron','Astron Cars','Zürich'],['edel','Edel Rent Zug','Zug'],['swiss','Swiss Car Rent','Basel']];
+  var esc=function(t){return t.replace(/&/g,'&amp;')};
+  var one=P.map(function(p){return '<div class="pt"><img src="partners/'+p[0]+'.png" alt="'+esc(p[1])+'" loading="lazy" decoding="async" width="120" height="64"><b>'+esc(p[1])+'</b><span>'+p[2]+'</span></div>'}).join('');
+  $('track').innerHTML=one+one.replace(/class="pt"/g,'class="pt" aria-hidden="true"');
+
+  /* Leistungen */
+  var S=[['Gründung','Firmengründung & Dokumente',['Firmenregistrierung','Firmenadresse','Zertifizierung','Notarielle Dokumente']],['Branding','Logo & Auftritt',['Logo','Branding','Eigene Website']],['Videokurs','Schulung & Support',['25 Module','24/7 Support','Branchenwissen']],['Fahrzeuge','Fahrzeugbeschaffung',['Plattform','Investoren','Partnernetzwerk','Hunderte Fahrzeugbesitzer']],['Marketing','Social Media & Marketing',['Instagram','TikTok','WhatsApp Business','Conversions']],['Partner','Dienstleistungen',['Buchhaltung','GPS-Tracking','Abholpartner','Inkassopartner']],['Recht','Rechtliche Unterstützung',['Mietvertrag','Datenschutz','Anwaltsdokumente']],['Zertifikat','Abschluss',['Zertifizierter Sportwagenvermieter','Kautionsfreie Vermietung']]];
+  $('svcs').innerHTML=S.map(function(s,i){return '<div class="card svc rv"><span class="num">0'+(i+1)+' · '+s[0]+'</span><h3>'+esc(s[1])+'</h3><div class="chips">'+s[2].map(function(c){return '<span>'+c+'</span>'}).join('')+'</div></div>'}).join('');
+
+  /* Linien der Ablauf-Grafik */
+  var flow=$('flow'),core=$('core'),wires=$('wires'),NS='http://www.w3.org/2000/svg';
+  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e}
+  function draw(){
+    wires.innerHTML='';var f=flow.getBoundingClientRect(),c=core.getBoundingClientRect(),ps=[],dots=[];
+    var horiz=window.innerWidth>=1000;
+    flow.querySelectorAll('.node').forEach(function(n){
+      var r=n.getBoundingClientRect(),inn=n.getAttribute('data-a')==='in',x1,y1,x2,y2,d;
+      if(horiz){
+        y1=r.top-f.top+r.height/2;y2=c.top-f.top+c.height/2;
+        if(inn){x1=r.right-f.left;x2=c.left-f.left}else{x1=c.right-f.left;x2=r.left-f.left;var t=y1;y1=y2;y2=t}
+        var m=(x1+x2)/2;d='M'+x1+' '+y1+' C'+m+' '+y1+','+m+' '+y2+','+x2+' '+y2;
+      }else{
+        x1=r.left-f.left+r.width/2;x2=c.left-f.left+c.width/2;
+        if(inn){y1=r.bottom-f.top;y2=c.top-f.top}else{y1=c.bottom-f.top;y2=r.top-f.top;var u=x1;x1=x2;x2=u}
+        var mm=(y1+y2)/2;d='M'+x1+' '+y1+' C'+x1+' '+mm+','+x2+' '+mm+','+x2+' '+y2;
+      }
+      ps.push(d);dots.push([x1,y1],[x2,y2]);
     });
-    rows.innerHTML=html||'<div class="fempty">Kein Treffer. Frag es im Erstgespräch – oder versuche „Vertrag“, „Preise“, „Instagram“.</div>';
-    fc.textContent=t?(n+' Treffer'):'8 Bereiche · '+topics+' Leistungen';
+    ps.forEach(function(d){wires.appendChild(el('path',{d:d,'class':'wire'}))});
+    if(desktop)ps.forEach(function(d,i){wires.appendChild(el('path',{d:d,'class':'pulse','data-i':i}))});
+    dots.forEach(function(p){wires.appendChild(el('circle',{cx:p[0],cy:p[1],r:3.5,'class':'dot'}))});
   }
-  q.addEventListener('input',renderFinder);renderFinder();
+  var lastW=0;function redraw(){if(window.innerWidth!==lastW){lastW=window.innerWidth;draw()}}
+  window.addEventListener('resize',function(){clearTimeout(redraw.t);redraw.t=setTimeout(redraw,150)});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw);
+  redraw();
 
-  var cats=['Allgemein','Programm','Kosten'];
-  var qa=[
-    [0,'Brauche ich Erfahrung in der Autobranche?','Nein. Du brauchst aber die Bereitschaft, ein echtes Unternehmen aufzubauen. Wir begleiten dich von der Firmengründung an.'],
-    [0,'Gehört das Unternehmen mir?','Ja. Du baust dein eigenes Unternehmen unter deiner eigenen Marke auf. Es ist kein Franchise.'],
-    [0,'Brauche ich eine GmbH?','Nein. Du kannst auch als Einzelunternehmer oder in einer anderen Rechtsform starten.'],
-    [0,'Brauche ich zum Starten eine Garage?','Nein. Die Fahrzeuge können auch auf angemieteten Stellplätzen stehen.'],
-    [1,'Muss ich Autos kaufen oder leasen?','Nicht zwingend. Über unser Partnernetzwerk bekommst du Zugang zu Fahrzeugen aller Preisklassen und zu Hunderten Fahrzeugbesitzern.'],
-    [1,'Was ist alles enthalten?','Firmengründung und Dokumente, Logo und Branding, Videokurs mit 25 Modulen, Fahrzeugbeschaffung, Social Media und Marketing, Partner für GPS, Buchhaltung und Abholung, rechtliche Unterlagen und das Zertifikat als Sportwagenvermieter.'],
-    [1,'Garantiert ihr Erfolg oder Umsatz?','Nein. Das kann niemand seriös garantieren. Du bekommst Wissen, Struktur und Praxiserfahrung. Was du daraus machst, liegt bei dir.'],
-    [2,'Wie viel Startkapital brauche ich?','Das hängt von Markt, Fahrzeugklasse und Geschäftsmodell ab. Deine Situation prüfen wir im kostenlosen Erstgespräch.'],
-    [2,'Was kostet Learn 2 Rent?','Es gibt verschiedene Pakete, je nachdem, wie viel Unterstützung du brauchst. Welches passt, besprechen wir im kostenlosen Erstgespräch.']
-  ];
-  var ftabs=document.getElementById('ftabs'),qlist=document.getElementById('qlist'),qtext=document.getElementById('qtext');
-  var cat=0,sel=0,cur=[];
-  var chev='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9 L12 15 L18 9"/></svg>';
-  cats.forEach(function(c,i){var b=document.createElement('button');b.type='button';b.className='ftab';b.setAttribute('role','tab');b.textContent=c;b.addEventListener('click',function(){cat=i;sel=0;renderFaq();});ftabs.appendChild(b);});
-  function renderFaq(){
-    Array.prototype.forEach.call(ftabs.children,function(b,i){b.setAttribute('aria-selected',i===cat?'true':'false');});
-    cur=qa.filter(function(x){return x[0]===cat;});
-    qlist.innerHTML='';
-    cur.forEach(function(x,i){
-      var b=document.createElement('button');b.type='button';b.className='q';b.setAttribute('role','tab');b.setAttribute('aria-selected',i===sel?'true':'false');
-      b.innerHTML='<span></span>'+chev;b.firstChild.textContent=x[1];
-      b.addEventListener('click',function(){sel=i;renderFaq();});
-      qlist.appendChild(b);
-    });
-    qtext.textContent=cur[sel][2];
-    qtext.classList.remove('swap');void qtext.offsetWidth;qtext.classList.add('swap');
-  }
-  document.getElementById('qprev').addEventListener('click',function(){sel=(sel+cur.length-1)%cur.length;renderFaq();});
-  document.getElementById('qnext').addEventListener('click',function(){sel=(sel+1)%cur.length;renderFaq();});
-  renderFaq();
+  /* Desktop: sanftes Einblenden + Lichtimpulse */
+  if(desktop&&'IntersectionObserver' in window&&!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv').forEach(function(x){io.observe(x)});
+    new IntersectionObserver(function(es,o){if(es[0].isIntersecting){o.disconnect();draw();
+      wires.querySelectorAll('.pulse').forEach(function(p){var L=p.getTotalLength(),i=+p.getAttribute('data-i');p.style.strokeDasharray='60 '+(L+60);
+        p.animate([{strokeDashoffset:60,opacity:1},{strokeDashoffset:-L,opacity:1}],{duration:1400,delay:(i<2?0:1500)+(i%2)*150,easing:'ease-in-out',fill:'forwards'})})}},{threshold:.5}).observe(flow);
+  }else{document.querySelectorAll('.rv').forEach(function(x){x.classList.add('in')})}
 
-  var modal=document.getElementById('modal'),mform=document.getElementById('mform');
-  var panes=mform.querySelectorAll('.pane'),bars=modal.querySelectorAll('.prog i');
-  var meta=document.getElementById('stepmeta'),err=document.getElementById('merr');
-  var back=document.getElementById('mback'),next=document.getElementById('mnext'),foot=document.getElementById('mfoot'),trust=document.getElementById('mtrust');
-  var labels=['DEIN STAND','KONTAKTDATEN','DEIN ZIEL'],step=0,lastFocus=null;
-  var arr=' <span class="ar" aria-hidden="true">→</span>';
-  function go(s){
-    step=s;err.textContent='';
-    panes.forEach(function(p,i){p.classList.toggle('on',i===s);});
-    bars.forEach(function(b,i){b.classList.toggle('on',i<=Math.min(s,2));});
-    var done=s===3;foot.hidden=done;trust.hidden=done;
-    meta.textContent=done?'ANFRAGE VOLLSTÄNDIG':'SCHRITT '+(s+1)+' VON 3 · '+labels[s];
-    back.hidden=s===0||done;
-    next.innerHTML=(s===2?'Anfrage absenden':'Weiter')+arr;
-    var f=panes[s].querySelector('input:not([type=radio]),textarea,select,button');
-    if(f&&!LITE)setTimeout(function(){f.focus({preventScroll:true});},80);
-  }
-  function openM(){lastFocus=document.activeElement;modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('lock');go(step===3?0:step);}
-  function closeM(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('lock');if(lastFocus)lastFocus.focus({preventScroll:true});}
-  document.querySelectorAll('a[href="#bewerbung"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();openM();});});
-  modal.querySelectorAll('[data-close]').forEach(function(el){el.addEventListener('click',closeM);});
-  modal.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){closeM();return;}
-    if(e.key!=='Tab')return;
-    var fs=Array.prototype.filter.call(modal.querySelectorAll('button,input,select,textarea,a[href]'),function(x){return x.offsetParent!==null;});
-    if(!fs.length)return;var a=fs[0],z=fs[fs.length-1];
-    if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();}
-    else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}
-  });
-  back.addEventListener('click',function(){go(Math.max(0,step-1));});
-  function val(id){return document.getElementById(id).value.trim();}
-  var WEB3FORMS_KEY=window.WEB3FORMS_KEY||'';
-  var doneText=document.getElementById('done-text');
-  function radio(n){var r=mform.querySelector('input[name="'+n+'"]:checked');return r?r.parentNode.textContent.trim():'';}
-  function sendLead(){
-    var data={access_key:WEB3FORMS_KEY,subject:'Neue Anfrage Learn 2 Rent: '+val('m-vor')+' '+val('m-nach'),from_name:'Learn 2 Rent Website',replyto:val('m-mail'),
-      Name:val('m-vor')+' '+val('m-nach'),Telefon:val('m-tel'),'E-Mail':val('m-mail'),Region:val('m-ort')||'–',Stand:radio('stand'),Startkapital:document.getElementById('m-kap').value,Ziel:val('m-ziel')||'–',Kontaktweg:radio('weg'),Einverstaendnis:'ja'};
-    if(!WEB3FORMS_KEY){doneText.textContent='Vorschau: Die Anfrage ist vollständig, wird hier aber noch nicht versendet. Auf der Live-Seite geht sie direkt per E-Mail an Learn 2 Rent.';go(3);return;}
-    next.disabled=true;next.textContent='Wird gesendet …';
+  /* ---------- Modals ---------- */
+  var open=null,last=null;
+  function show(m){if(open)hide();last=document.activeElement;m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.classList.add('lock');open=m}
+  function hide(){if(!open)return;open.classList.remove('open');open.setAttribute('aria-hidden','true');document.body.classList.remove('lock');open=null;if(last&&last.focus)last.focus({preventScroll:true})}
+  document.querySelectorAll('[data-close]').forEach(function(b){b.addEventListener('click',hide)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')hide()});
+  document.querySelectorAll('.js-open').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();step(0);show($('modal'))})});
+
+  function send(data,cb){
+    if(!WEB3FORMS_KEY){cb(true,true);return}
+    data.access_key=WEB3FORMS_KEY;data.from_name='Learn 2 Rent Website';
     fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
-      .then(function(r){return r.json().then(function(j){return r.ok&&j.success;});})
-      .then(function(ok){next.disabled=false;if(!ok)throw 0;doneText.textContent='Wir melden uns persönlich bei dir – per '+radio('weg')+'.';go(3);})
-      .catch(function(){next.disabled=false;next.innerHTML='Anfrage absenden'+arr;err.textContent='Senden hat nicht geklappt. Bitte versuche es nochmal.';});
+      .then(function(r){return r.json()}).then(function(j){cb(!!j.success)}).catch(function(){cb(false)});
   }
-  mform.addEventListener('submit',function(e){
-    e.preventDefault();
-    if(step===1){
-      var miss=[];
-      if(!val('m-vor'))miss.push('Vorname');
-      if(!val('m-nach'))miss.push('Nachname');
-      if(val('m-tel').replace(/[^0-9]/g,'').length<7)miss.push('gültige Telefonnummer');
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('m-mail')))miss.push('gültige E-Mail');
-      if(miss.length){err.textContent='Bitte ergänzen: '+miss.join(', ')+'.';return;}
-    }
-    if(step===2){
-      if(!document.getElementById('m-ok').checked){err.textContent='Bitte bestätige das Einverständnis zur Kontaktaufnahme.';return;}
-      if(document.getElementById('m-hp').value){go(3);return;}
-      sendLead();return;
-    }
-    go(step+1);
+  var v=function(id){return $(id).value.trim()};
+  var okMail=function(m){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m)};
+  var okTel=function(t){return t.replace(/\D/g,'').length>=7};
+  var radio=function(n){var r=document.querySelector('input[name="'+n+'"]:checked');return r?r.parentNode.textContent.trim():''};
+
+  /* 3-Schritte-Formular */
+  var mform=$('mform'),panes=mform.querySelectorAll('.pane'),cur=0,labels=['DEIN STAND','KONTAKTDATEN','DEIN ZIEL'];
+  function step(s){cur=s;$('m-err').textContent='';
+    panes.forEach(function(p,i){p.classList.toggle('on',i===s)});
+    $('prog').querySelectorAll('i').forEach(function(b,i){b.classList.toggle('on',i<=Math.min(s,2))});
+    var done=s===3;$('m-foot').hidden=done;$('prog').hidden=done;
+    $('meta').textContent=done?'ANFRAGE GESENDET':'SCHRITT '+(s+1)+' VON 3 · '+labels[s];
+    $('m-back').hidden=s===0||done;$('m-next').textContent=s===2?'Anfrage absenden →':'Weiter →';
+  }
+  $('m-back').addEventListener('click',function(){step(cur-1)});
+  mform.addEventListener('submit',function(e){e.preventDefault();var err=$('m-err');
+    if(cur===1){var miss=[];if(!v('m-vor'))miss.push('Vorname');if(!v('m-nach'))miss.push('Nachname');if(!okTel(v('m-tel')))miss.push('Telefonnummer');if(!okMail(v('m-mail')))miss.push('E-Mail');
+      if(miss.length){err.textContent='Bitte ergänzen: '+miss.join(', ')+'.';return}}
+    if(cur===2){if(!$('m-ok').checked){err.textContent='Bitte bestätige das Einverständnis.';return}
+      if(v('m-hp')){step(3);return}
+      var b=$('m-next');b.disabled=true;b.textContent='Wird gesendet …';
+      send({subject:'Neue Anfrage Learn 2 Rent: '+v('m-vor')+' '+v('m-nach'),replyto:v('m-mail'),Name:v('m-vor')+' '+v('m-nach'),Telefon:v('m-tel'),'E-Mail':v('m-mail'),Region:v('m-ort')||'–',Stand:radio('stand'),Startkapital:$('m-kap').value,Ziel:v('m-ziel')||'–',Kontaktweg:radio('weg')},
+        function(ok,preview){b.disabled=false;if(!ok){b.textContent='Anfrage absenden →';err.textContent='Senden hat nicht geklappt. Bitte versuche es nochmal.';return}
+          if(preview)$('m-done').textContent='Vorschau: Auf der Live-Seite geht die Anfrage direkt per E-Mail an Learn 2 Rent.';step(3)});return}
+    step(cur+1);
   });
-  go(0);
 
-  if(window.matchMedia('(hover: hover)').matches){
-    document.querySelectorAll('.card').forEach(function(c){
-      c.classList.add('spot');
-      var pm=0,px=0,py=0;c.addEventListener('pointermove',function(e){px=e.clientX;py=e.clientY;if(pm)return;pm=requestAnimationFrame(function(){pm=0;var r=c.getBoundingClientRect();c.style.setProperty('--mx',(px-r.left)+'px');c.style.setProperty('--my',(py-r.top)+'px');});},{passive:true});
-    });
-  }
-
-  var flow=document.getElementById('flow'),wires=document.getElementById('wires'),core=document.getElementById('core');
-  var NS='http://www.w3.org/2000/svg';
-  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
-  function drawWires(){
-    while(wires.firstChild)wires.removeChild(wires.firstChild);
-    if(getComputedStyle(wires).display==='none')return;
-    var fr=flow.getBoundingClientRect(),cr=core.getBoundingClientRect();
-    wires.setAttribute('viewBox','0 0 '+fr.width+' '+fr.height);
-    var cy=cr.top-fr.top+cr.height/2,cxL=cr.left-fr.left,cxR=cr.right-fr.left,paths=[],ends=[];
-    if(window.innerWidth<=620){
-      var cx=cr.left-fr.left+cr.width/2,cT=cr.top-fr.top,cB=cr.bottom-fr.top;
-      flow.querySelectorAll('[data-a="in"]').forEach(function(n){var r=n.getBoundingClientRect(),x=r.left-fr.left+r.width/2,y=r.bottom-fr.top,m=(y+cT)/2;paths.push('M'+x+' '+y+' C '+x+' '+m+', '+cx+' '+m+', '+cx+' '+cT);ends.push([x,y]);});
-      flow.querySelectorAll('[data-a="out"]').forEach(function(n){var r=n.getBoundingClientRect(),x=r.left-fr.left+r.width/2,y=r.top-fr.top,m=(cB+y)/2;paths.push('M'+cx+' '+cB+' C '+cx+' '+m+', '+x+' '+m+', '+x+' '+y);ends.push([x,y]);});
-      paths.forEach(function(d){wires.appendChild(el('path',{d:d,'class':'wire'}));});
-      paths.forEach(function(d,i){wires.appendChild(el('path',{d:d,'class':'pulse','data-i':i}));});
-      [[cx,cT],[cx,cB]].forEach(function(c){wires.appendChild(el('circle',{cx:c[0],cy:c[1],r:4,'class':'dot'}));});
-      ends.forEach(function(c){wires.appendChild(el('circle',{cx:c[0],cy:c[1],r:3,'class':'dot'}));});
-      return;
-    }
-    flow.querySelectorAll('[data-a="in"]').forEach(function(n){var r=n.getBoundingClientRect(),x=r.right-fr.left,y=r.top-fr.top+r.height/2,m=(x+cxL)/2;paths.push('M'+x+' '+y+' C '+m+' '+y+', '+m+' '+cy+', '+cxL+' '+cy);ends.push([x,y]);});
-    flow.querySelectorAll('[data-a="out"]').forEach(function(n){var r=n.getBoundingClientRect(),x=r.left-fr.left,y=r.top-fr.top+r.height/2,m=(cxR+x)/2;paths.push('M'+cxR+' '+cy+' C '+m+' '+cy+', '+m+' '+y+', '+x+' '+y);ends.push([x,y]);});
-    paths.forEach(function(d){wires.appendChild(el('path',{d:d,'class':'wire'}));});
-    paths.forEach(function(d,i){wires.appendChild(el('path',{d:d,'class':'pulse','data-i':i}));});
-    [[cxL,cy],[cxR,cy]].forEach(function(c){wires.appendChild(el('circle',{cx:c[0],cy:c[1],r:4,'class':'dot'}));});
-    ends.forEach(function(c){wires.appendChild(el('circle',{cx:c[0],cy:c[1],r:3,'class':'dot'}));});
-  }
-  var rT,lastW=window.innerWidth;window.addEventListener('resize',function(){if(window.innerWidth===lastW)return;lastW=window.innerWidth;clearTimeout(rT);rT=setTimeout(drawWires,150);});
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawWires);
-  drawWires();
-
-  var nav=document.getElementById('nav'),links=document.querySelectorAll('.menu a');
-  var secs=['top','vorteile','programm','mentor','angebot','faq'].map(function(id){return document.getElementById(id);});
-  var streak=document.getElementById('streak'),gb1=document.getElementById('gb1'),gb2=document.getElementById('gb2'),vframe=document.getElementById('vframe'),diaL=document.getElementById('diaL'),diaR=document.getElementById('diaR'),ring=document.getElementById('ring'),ticking=false;
-  function clamp(v){return v<0?0:v>1?1:v;}
-  var lite=window.matchMedia('(max-width:820px), (hover:none)').matches;
-  var cur=window.scrollY,raf=0,lastNav=-1;
-  function apply(y){
-    var vh=window.innerHeight;
-    var k=clamp(y/(vh*0.8));
-    var hh=Math.max(1,document.documentElement.scrollHeight-vh),kk=y/hh;
-    streak.style.transform='rotate('+(-30+kk*90).toFixed(2)+'deg) scale('+(1+kk*0.2).toFixed(4)+')';
-    gb1.style.transform='translate3d('+(-kk*40).toFixed(2)+'vw,'+(kk*30).toFixed(2)+'vh,0)';
-    gb2.style.transform='translate3d('+(kk*50).toFixed(2)+'vw,'+(-kk*50).toFixed(2)+'vh,0)';
-    diaL.style.transform='translate3d('+(-k*80).toFixed(1)+'px,'+(k*60).toFixed(1)+'px,0) rotate('+(-k*10).toFixed(2)+'deg)';
-    diaR.style.transform='translate3d('+(k*80).toFixed(1)+'px,'+(k*60).toFixed(1)+'px,0) rotate('+(k*10).toFixed(2)+'deg)';
-    var rr=ring.getBoundingClientRect(),rk=clamp(1-(rr.top/vh));
-    ring.style.transform='rotate('+(rk*60-30).toFixed(2)+'deg)';
-  }
-  function frame(){
-    raf=0;
-    var y=window.scrollY,vh=window.innerHeight;
-    var sc=y>16;if(sc!==lastNav){nav.classList.toggle('scrolled',sc);lastNav=sc;}
-    var mark=y+vh*0.35,idx=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top+y<=mark)idx=i;});
-    links.forEach(function(a,i){a.classList.toggle('on',i===idx);});
-    if(reduce||lite)return;
-    cur+=(y-cur)*0.12;
-    if(Math.abs(y-cur)<0.4)cur=y;
-    apply(cur);
-    if(cur!==y)raf=requestAnimationFrame(frame);
-  }
-  window.addEventListener('scroll',function(){if(!raf)raf=requestAnimationFrame(frame);},{passive:true});
-  cur=window.scrollY;frame();
-
-  if(reduce)return;
-  var cm=document.querySelectorAll('#coreMods .mod'),ran=false;
-  function runFlow(){
-    wires.querySelectorAll('.pulse').forEach(function(p){
-      var L=p.getTotalLength(),seg=Math.min(60,L*.4),i=+p.getAttribute('data-i');
-      p.style.strokeDasharray=seg+' '+(L+seg);
-      p.animate([{strokeDashoffset:seg,opacity:1},{strokeDashoffset:-L,opacity:1}],{duration:1300,delay:(i<2?0:1900)+(i%2)*140,easing:'cubic-bezier(.45,0,.2,1)',fill:'both'});
-    });
-    cm.forEach(function(m){m.classList.remove('on');});
-    cm.forEach(function(m,i){setTimeout(function(){m.classList.add('on');if(i>0)cm[i-1].classList.remove('on');},1100+i*110);});
-    setTimeout(function(){cm.forEach(function(m){m.classList.add('on');});setTimeout(function(){cm.forEach(function(m,i){if(i!==cm.length-1)m.classList.remove('on');});},700);},1100+cm.length*110);
-  }
-  if('IntersectionObserver' in window){
-    new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting&&!ran){ran=true;setTimeout(function(){drawWires();runFlow();},500);o.disconnect();}});},{threshold:.5}).observe(flow);
-    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px'});
-    document.querySelectorAll('.rv').forEach(function(el){
-      var idx=Array.prototype.indexOf.call(el.parentElement.children,el);
-      if(el.getBoundingClientRect().top>window.innerHeight){el.classList.add('pre');el.style.transitionDelay=(idx%4)*100+'ms';io.observe(el);}
-    });
-    var cio=new IntersectionObserver(function(es){es.forEach(function(e){
-      if(!e.isIntersecting)return;cio.unobserve(e.target);
-      var el=e.target,to=+el.getAttribute('data-count'),t0=null;
-      function f(t){if(!t0)t0=t;var k=Math.min(1,(t-t0)/1400);el.textContent=Math.round(to*(1-Math.pow(1-k,4)))+(k>=1?(el.getAttribute('data-suffix')||''):'');if(k<1)requestAnimationFrame(f);}
-      el.textContent='0';requestAnimationFrame(f);
-    });},{threshold:.6});
-    document.querySelectorAll('[data-count]').forEach(function(el){cio.observe(el);});
-  }
-  flow.addEventListener('mouseenter',function(){if(ran)runFlow();});
+  /* Popup */
+  var qform=$('qform');
+  qform.addEventListener('submit',function(e){e.preventDefault();var err=$('q-err'),miss=[];
+    if(!v('q-name'))miss.push('Name');if(!okTel(v('q-tel')))miss.push('Telefonnummer');if(!okMail(v('q-mail')))miss.push('E-Mail');
+    if(miss.length){err.textContent='Bitte prüfen: '+miss.join(', ')+'.';return}
+    if(!$('q-ok').checked){err.textContent='Bitte bestätige das Einverständnis.';return}
+    err.textContent='';if(v('q-hp'))return;
+    var b=$('q-btn');b.disabled=true;b.textContent='Wird gesendet …';
+    send({subject:'Erstgespräch (Popup): '+v('q-name'),replyto:v('q-mail'),Name:v('q-name'),Telefon:v('q-tel'),'E-Mail':v('q-mail'),Quelle:'Popup'},function(ok,preview){
+      b.disabled=false;b.textContent='Kostenloses Erstgespräch sichern →';
+      if(!ok){err.textContent='Senden hat nicht geklappt. Bitte versuche es nochmal.';return}
+      if(preview)$('q-done').textContent='Vorschau: Auf der Live-Seite geht die Anfrage direkt per E-Mail an Learn 2 Rent.';
+      qform.querySelectorAll('.pane').forEach(function(p,i){p.classList.toggle('on',i===1)})});
+  });
+  var seen=false;try{seen=sessionStorage.getItem('l2r_q')==='1'}catch(e){}
+  if(!seen)setTimeout(function(){if(!open){show($('quick'));try{sessionStorage.setItem('l2r_q','1')}catch(e){}}},4000);
 })();
 </script>
-<script>
-(function(){
-  var qk=document.getElementById('quick'),f=document.getElementById('qform'),err=document.getElementById('qerr'),btn=document.getElementById('qbtn'),last=null;
-  function g(id){return document.getElementById(id).value.trim();}
-  function seen(){try{return sessionStorage.getItem('l2r_qk')==='1';}catch(e){return false;}}
-  function mark(){try{sessionStorage.setItem('l2r_qk','1');}catch(e){}}
-  function open(){
-    if(document.getElementById('modal').classList.contains('open'))return;
-    last=document.activeElement;qk.classList.add('open');qk.setAttribute('aria-hidden','false');document.body.classList.add('lock');mark();
-    if(!window.matchMedia('(hover:none)').matches)setTimeout(function(){document.getElementById('q-name').focus({preventScroll:true});},350);
-  }
-  function close(){qk.classList.remove('open');qk.setAttribute('aria-hidden','true');document.body.classList.remove('lock');if(last&&last.focus)last.focus({preventScroll:true});}
-  qk.querySelectorAll('[data-qclose]').forEach(function(el){el.addEventListener('click',close);});
-  qk.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
-  if(!seen())setTimeout(open,4000);
-  f.addEventListener('submit',function(e){
-    e.preventDefault();var miss=[];
-    if(!g('q-name'))miss.push('Name');
-    if(!/^[+0-9 ()\/-]{6,}$/.test(g('q-tel')))miss.push('Telefonnummer');
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(g('q-mail')))miss.push('E-Mail');
-    if(miss.length){err.textContent='Bitte prüfe: '+miss.join(', ')+'.';return;}
-    if(!document.getElementById('q-ok').checked){err.textContent='Bitte bestätige die Einwilligung.';return;}
-    if(g('q-hp'))return;
-    err.textContent='';
-    var key=window.WEB3FORMS_KEY||'';
-    if(!key){document.getElementById('qdone').textContent='Vorschau: Auf der Live-Seite geht deine Anfrage direkt per E-Mail an Learn 2 Rent.';qk.classList.add('sent');return;}
-    btn.disabled=true;btn.textContent='Wird gesendet …';
-    fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
-      body:JSON.stringify({access_key:key,subject:'Erstgespräch (Popup): '+g('q-name'),from_name:'Learn 2 Rent Website',replyto:g('q-mail'),Name:g('q-name'),Telefon:g('q-tel'),'E-Mail':g('q-mail'),Quelle:'Popup nach 4 Sekunden',Einverstaendnis:'ja'})})
-      .then(function(r){return r.json().then(function(j){return r.ok&&j.success;});})
-      .then(function(ok){if(!ok)throw 0;qk.classList.add('sent');})
-      .catch(function(){btn.disabled=false;btn.innerHTML='Kostenloses Erstgespräch sichern <span class="ar" aria-hidden="true">→</span>';err.textContent='Senden hat nicht geklappt. Bitte versuche es nochmal.';});
-  });
-})();
-</script>
-
-
-
-
 </body>
 </html>
