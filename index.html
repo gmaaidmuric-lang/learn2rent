@@ -802,6 +802,27 @@ a,button,input,select,label{touch-action:manipulation}
   .qk-badge{display:none!important}
   .qk-facts{display:none!important}
 }
+
+/* ===== Quick-Popup Mobile v3: klein & clean ===== */
+@media (max-width:620px){
+  .qk .sheet{overflow:visible!important;max-height:none!important;padding:0 0 env(safe-area-inset-bottom)!important;border-radius:22px 22px 0 0!important}
+  .qk .x{position:absolute!important;top:14px!important;right:14px!important;float:none!important;margin:0!important;width:34px!important;height:34px!important;font-size:18px!important;border-radius:50%!important;background:rgba(255,255,255,.08)!important;border:0!important}
+  .qk-hero{display:grid!important;grid-template-columns:44px 1fr;column-gap:12px;align-items:center;text-align:left!important;padding:18px 60px 0 18px!important}
+  .qk-hero>div{display:none!important}
+  .qk-av{grid-row:1/3;width:44px!important;height:44px!important;box-shadow:none!important;border-width:1.5px!important}
+  .qk-hero h2{font-size:17px!important;line-height:1.2!important;margin:0!important}
+  .qk-hero h2 br{display:none}
+  .qk-hero p{font-size:12.5px!important;line-height:1.35!important;margin:3px 0 0!important;max-width:none!important}
+  .qk-hero p b:last-child{font-weight:600}
+  .qk form{padding:14px 18px 16px!important;gap:8px!important}
+  .qk .f{font-size:0!important;gap:0!important}
+  .qk .f input{font-size:16px!important;padding:12px 14px!important;border-radius:12px!important}
+  .qk .consent{font-size:11.5px!important;line-height:1.35;margin-top:2px}
+  .qk .consent input{width:16px;height:16px}
+  .qk .btn{padding:13px 16px!important;font-size:15px!important;margin-top:2px}
+  .qk-small{font-size:11px!important}
+  .qk .err:empty{display:none}
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1263,13 +1284,13 @@ a,button,input,select,label{touch-action:manipulation}
       <img class="qk-av" src="adin-face2.jpg" alt="Adin Kilim">
       <div><span class="qk-badge">100 % kostenlos</span></div>
       <h2 id="qk-title">Sichere dir dein kostenloses Erstgespräch</h2>
-      <p>Sprich mit dem <b>Team von Adin Kilim</b> – aus der Praxis von Edition Rent mit <b>65+ Sportwagen</b> in der Vermietung.</p>
+      <p>Sprich mit dem <b>Team von Adin Kilim</b> – 100&nbsp;% kostenlos und unverbindlich.</p>
       <div class="qk-facts"><span>Unverbindlich</span><span>Kein Verkaufsdruck</span><span>Persönliche Beratung</span></div>
     </div>
     <form id="qform" novalidate>
       <label class="f" for="q-name">Name*<input id="q-name" type="text" autocomplete="name" placeholder="Vor- und Nachname"></label>
-      <label class="f" for="q-tel">Telefonnummer / WhatsApp*<input id="q-tel" type="tel" autocomplete="tel" placeholder="+49 …"></label>
-      <label class="f" for="q-mail">E-Mail*<input id="q-mail" type="email" autocomplete="email" placeholder="name@beispiel.de"></label>
+      <label class="f" for="q-tel">Telefonnummer / WhatsApp*<input id="q-tel" type="tel" autocomplete="tel" placeholder="Telefon / WhatsApp"></label>
+      <label class="f" for="q-mail">E-Mail*<input id="q-mail" type="email" autocomplete="email" placeholder="E-Mail"></label>
       <input id="q-hp" type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <label class="consent" for="q-ok"><input id="q-ok" type="checkbox"><span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme genutzt werden.</span></label>
       <p class="err" id="qerr" role="alert" style="margin:0"></p>
